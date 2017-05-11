@@ -1,0 +1,21 @@
+{
+  "name": "smartwrap",
+  "version": "1.0.0",
+  "description": "Wordwrap that doesn't split words unless the word length is greater that the line width.",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt t"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/tecfu/smartwrap.git"
+  },
+  "keywords": [
+    "wordwrap"
+  ],
+  "author": "tecfu",
+  "license": "ISC",
+  "dependencies": {
+    "merge": "^1.2.0"
+  }
+}
