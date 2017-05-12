@@ -5,21 +5,22 @@ function smartWrap(text,options){
 	var Wcwidth = require('wcwidth');
 	
 	var defaults = {};
+	defaults.calculateSpaceRemaining = function(obj,i){//i is in case someone wants to customize based on line index
+		return Math.max(obj.width - obj.spacesUsed - obj.paddingLeft - obj.paddingRight,0);
+	}; //function to set starting line length
 	defaults.currentLine = 0; //index of current line in 'lines[]'
 	defaults.input = []; //input string split by whitespace 
 	defaults.lines = [
 		[]
 	]; //assume at least one line
+	defaults.minWidth = 2; //fallback to if width set too narrow
 	defaults.paddingLeft = 0;
 	defaults.paddingRight = 0;
-	defaults.lineLength = 10; 
 	defaults.returnFormat = 'string'; //or 'array'
-	defaults.calculateSpaceRemaining = function(obj,i){//i is in case someone wants to customize based on line index
-		return Math.max(obj.lineLength - obj.spacesUsed - obj.paddingLeft - obj.paddingRight,0);
-	}; //function to set starting line length
 	defaults.skipPadding = false; //set to true when padding set too wide for line length
 	defaults.spacesUsed = 0; //spaces used so far on current line
 	defaults.splitAt = [" ","\t"];
+	defaults.width = 10; 
 	defaults.words = [];
 	
 	var wrapObj = Merge({},defaults,options);
@@ -28,22 +29,23 @@ function smartWrap(text,options){
 	wrapObj.paddingLeft = Math.abs(wrapObj.paddingLeft);
 	wrapObj.paddingRight = Math.abs(wrapObj.paddingRight);
 
-	var lineLengthNetPadding = wrapObj.lineLength - wrapObj.paddingLeft
-		- wrapObj.paddingRight;
+	wrapObj.lineLength = wrapObj.width -
+	 wrapObj.paddingLeft -
+	 wrapObj.paddingRight;
 
-	if(lineLengthNetPadding < 2){
+	if(wrapObj.lineLength < wrapObj.minWidth){
 		//skip padding if lineLength too narrow
 		wrapObj.skipPadding = true;
+		wrapObj.lineLength = wrapObj.minWidth;
 	}
 	else{
 		//resize line length to include padding
-		wrapObj.lineLength = lineLengthNetPadding;
+		wrapObj.lineLength = wrapObj.lineLength;
 	}	
 		
-	//consider wide characters when breaking words
+	//get character after which word must be broken (accounts for wide chars)
 	var breakWord = function(word,breakAtLength){
 		var charArr = [...word];
-		//get character after which word must be broken
 		var index = 0;
 		var indexOfLastFitChar = 0;
 		var fittableLength = 0;
@@ -61,7 +63,7 @@ function smartWrap(text,options){
 		}
 		//break after this character
 		return indexOfLastFitChar;
-	}
+	};
 
 	//Break input into array of characters split by whitespace and/or tabs
 	var unfilteredWords = [];
@@ -88,7 +90,6 @@ function smartWrap(text,options){
 			wordlength;
 
 	while(wrapObj.words.length > 0){
-
 		spaceRemaining = wrapObj.calculateSpaceRemaining(wrapObj);
 		word = wrapObj.words.shift();
 		wordlength = Wcwidth(word);
@@ -99,12 +100,12 @@ function smartWrap(text,options){
 				//Break it, then re-insert its parts into wrapObj.words
 				//so can loop back to re-handle each word
 				splitIndex = breakWord(word,wrapObj.lineLength);
-				wrapObj.words.unshift(word.substr(0,Math.max(splitIndex,1)));
-				wrapObj.words.splice(1,0,word.substr(Math.max(splitIndex,1)));
+				wrapObj.words.unshift(word.substr(0,splitIndex + 1)); //+1 for substr fn
+				wrapObj.words.splice(1,0,word.substr(splitIndex + 1));//+1 for substr fn
 				break;
 
 			//2- Word is too long for current line and must be wrapped
-			case(spaceRemaining <= wordlength):
+			case(spaceRemaining < wordlength):
 				//add a new line to our array of lines
 				wrapObj.lines.push([]);
 				//note carriage to new line in counter
@@ -134,9 +135,9 @@ function smartWrap(text,options){
 			line = line.join('\ ');
 			//add padding to ends of line
 			if(!wrapObj.skipPadding){
-				line = Array(wrapObj.paddingLeft+1).join('\ ')
-						+ line
-						+ Array(wrapObj.paddingRight+1).join('\ ');
+				line = Array(wrapObj.paddingLeft+1).join('\ ') +
+						 line +
+						 Array(wrapObj.paddingRight+1).join('\ ');
 			}
 			return line;
 		})
