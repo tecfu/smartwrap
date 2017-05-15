@@ -16,6 +16,11 @@
   "author": "tecfu",
   "license": "ISC",
   "dependencies": {
+    "breakword": "^1.0.2",
     "merge": "^1.2.0"
+  },
+  "devDependencies": {
+    "grunt-mocha-test": "^0.13.2",
+    "mocha": "^3.4.1"
   }
 }
