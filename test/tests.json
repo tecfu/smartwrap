@@ -1,0 +1,62 @@
+[
+  {
+    "string": "宽字符",
+    "width": 0,
+    "output": "宽\n字\n符"
+  },
+  {
+    "string": "宽字符",
+    "width": 1,
+    "output": "宽\n字\n符"
+  },
+  {
+    "string": "宽字符",
+    "width": 2,
+    "output": "宽\n字\n符"
+  },
+  {
+    "string": "宽字符",
+    "width": 4,
+    "output": "宽字\n符"
+  },
+  {
+    "string": "宽字符",
+    "width": 6,
+    "output": "宽字符"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 0,
+    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 1,
+    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 2,
+    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 4,
+    "output": "brea\nkthi\nslon\ngstr\ning"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 6,
+    "output": "breakt\nhislon\ngstrin\ng"
+  },
+  {
+    "string": "breakthislongstring",
+    "width": 19,
+    "output": "breakthislongstring"
+  },
+  {
+    "string": "LordPablo⚡️",
+    "width": 10,
+    "output": "LordPablo⚡️"
+  }
+]
