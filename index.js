@@ -3,10 +3,11 @@ function smartWrap(text,options){
 	options = options || {};
 	var Merge = require('merge');
 	var Wcwidth = require('wcwidth');
+	var Breakword = require('breakword');
 	
 	var defaults = {};
 	defaults.calculateSpaceRemaining = function(obj,i){//i is in case someone wants to customize based on line index
-		return Math.max(obj.width - obj.spacesUsed - obj.paddingLeft - obj.paddingRight,0);
+		return Math.max(obj.lineLength - obj.spacesUsed - obj.paddingLeft - obj.paddingRight,0);
 	}; //function to set starting line length
 	defaults.currentLine = 0; //index of current line in 'lines[]'
 	defaults.input = []; //input string split by whitespace 
@@ -32,7 +33,7 @@ function smartWrap(text,options){
 	wrapObj.lineLength = wrapObj.width -
 	 wrapObj.paddingLeft -
 	 wrapObj.paddingRight;
-
+	
 	if(wrapObj.lineLength < wrapObj.minWidth){
 		//skip padding if lineLength too narrow
 		wrapObj.skipPadding = true;
@@ -41,30 +42,7 @@ function smartWrap(text,options){
 	else{
 		//resize line length to include padding
 		wrapObj.lineLength = wrapObj.lineLength;
-	}	
-		
-	//get character after which word must be broken (accounts for wide chars)
-	var breakWord = function(word,breakAtLength){
-		var charArr = [...word];
-		var index = 0;
-		var indexOfLastFitChar = 0;
-		var fittableLength = 0;
-		while(charArr.length > 0){
-			var char = charArr.shift();
-			var currentLength = fittableLength + Wcwidth(char);
-			if(currentLength <= breakAtLength){
-				indexOfLastFitChar = index;
-				fittableLength = currentLength;
-				index++;
-			}
-			else{
-				break;
-			}
-		}
-		//break after this character
-		return indexOfLastFitChar;
-	};
-
+	}
 	//Break input into array of characters split by whitespace and/or tabs
 	var unfilteredWords = [];
 	if(wrapObj.splitAt.indexOf('\t')!==-1){
@@ -99,7 +77,7 @@ function smartWrap(text,options){
 			case(wrapObj.lineLength < wordlength):
 				//Break it, then re-insert its parts into wrapObj.words
 				//so can loop back to re-handle each word
-				splitIndex = breakWord(word,wrapObj.lineLength);
+				splitIndex = Breakword(word,wrapObj.lineLength);
 				wrapObj.words.unshift(word.substr(0,splitIndex + 1)); //+1 for substr fn
 				wrapObj.words.splice(1,0,word.substr(splitIndex + 1));//+1 for substr fn
 				break;
@@ -140,7 +118,7 @@ function smartWrap(text,options){
 						 Array(wrapObj.paddingRight+1).join('\ ');
 			}
 			return line;
-		})
+		});
 		//return as string
 		return lines.join('\n');	
 	}
