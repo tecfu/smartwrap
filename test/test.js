@@ -45,7 +45,7 @@ describe('Examples',function(){
 
 	if(typeof global.save !== 'undefined' && global.save){
 		//write saved object to file
-		fs.writeFileSync(filepath,JSON.stringify(obj),'utf8');
+		fs.writeFileSync(filepath,JSON.stringify(obj,null,2),'utf8');
 		console.log("Tests saved to file.");
 	}
 });
