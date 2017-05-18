@@ -12,13 +12,20 @@ module.exports = function(grunt) {
 			test: {
 				options: {
 					ui : 'bdd',
-					require: [
-						function(){ global.save = 1; } //pass save as true when creating new tests
-					],
-reporter: 'spec',
+					reporter: 'spec',
 				},
 				//We require all our tests in the conf file, so we
 				//can do some pre-test functions before they are run.
+				src: ['./test/test.js']
+			},
+			generate: {
+				options: {
+					ui : 'bdd',
+					require: [
+						function(){ global.save = 1; } //pass save as true when generating/saving test output
+					],
+					reporter: 'spec',
+				},
 				src: ['./test/test.js']
 			}
 		}
@@ -30,8 +37,8 @@ reporter: 'spec',
 		'mochaTest:test'
 	]);
 
-	grunt.registerTask('test-travis', [
-		'mochaTest:test'
+	grunt.registerTask('test-gen', [
+		'mochaTest:generate'
 	]);
 
 };
