@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		mochaTest: {
-			test: {
+			run: {
 				options: {
 					ui : 'bdd',
 					reporter: 'spec',
@@ -18,13 +18,23 @@ module.exports = function(grunt) {
 				//can do some pre-test functions before they are run.
 				src: ['./test/test.js']
 			},
-			generate: {
+			save: {
 				options: {
 					ui : 'bdd',
 					require: [
 						function(){ global.save = 1; } //pass save as true when generating/saving test output
 					],
-					reporter: 'spec',
+					reporter: 'spec'
+				},
+				src: ['./test/test.js']
+			},
+			display: {
+				options: {
+					ui : 'bdd',
+					require: [
+						function(){ global.display = 1; } 
+					],
+					reporter: 'spec'
 				},
 				src: ['./test/test.js']
 			}
@@ -33,12 +43,16 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-mocha-test');
 
-	grunt.registerTask('test', [
-		'mochaTest:test'
+	grunt.registerTask('test-run', [
+		'mochaTest:run'
 	]);
 
-	grunt.registerTask('test-gen', [
-		'mochaTest:generate'
+	grunt.registerTask('test-save', [
+		'mochaTest:save'
+	]);
+
+	grunt.registerTask('test-display', [
+		'mochaTest:display'
 	]);
 
 };

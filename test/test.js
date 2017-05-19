@@ -1,53 +1,57 @@
 var Tests = {};
 var fs = require('fs'); 
-var glob = require('glob');
+//var glob = require('glob');
 var chai = require('chai');
 var expect = chai.expect;
 var assert = chai.assert;
 var should = chai.should();
-var exec = require('child_process').exec, child;
 var smartwrap = require('../index.js');
 var filepath = 'test/tests.json';
+var test = function(testResult,savedResult){
+	it('Strings should match',function(){
+		testResult.should.equal(savedResult);
+	})
+};
 
-//Run through all examples 
-describe('Examples',function(){
+//get test list
+var str = fs.readFileSync(filepath,{
+	encoding : 'utf-8'
+});
+
+var obj = JSON.parse(str);
+
+for(var i in obj){	
 	
-	//string
-	var str = fs.readFileSync(filepath,{
-		encoding : 'utf-8'
+	//generate new output 
+	var testResult = smartwrap(obj[i].input,{
+		width : obj[i].width
 	});
 
-	obj = JSON.parse(str);
-
-	for(var i in obj){	
-		//generate new output 
-		var output = smartwrap(obj[i].string,{
-			width : obj[i].width
-		});
-
-		console.log("Test Properties:",obj[i]);
-		console.log("12345678901234567890");
-		console.log("BEGIN---------------");
-		console.log(output);
-		console.log("END-----------------\n");
-
-		//save new output to file (save is set in Gruntfile.js)
-		if(typeof global.save !== 'undefined' && global.save){
-			obj[i].output = output;
-		}
-		else{
-			//compare this output to saved output
-			it('Test should match saved output.',function(){
-				obj[i].output.should.equal(output);
-			});
-		}
+	console.log("Test Properties:",obj[i]);
+	console.log("12345678901234567890");
+	console.log("BEGIN---------------");
+	console.log(testResult);
+	console.log("END-----------------\n");
+	switch(true){
+		case(typeof global.save !== 'undefined' && global.save):
+		//save tests
+			obj[i].output = testResult;
+			break;
+		case(typeof global.display !== 'undefined' && global.display):
+		//show tests (do nothing)
+			break;
+		default:
+		//run tests
+			describe('Test '+i,function(){
+				test(testResult,obj[i].output);
+			})
 	}
+}
 
-	if(typeof global.save !== 'undefined' && global.save){
-		//write saved object to file
-		fs.writeFileSync(filepath,JSON.stringify(obj,null,2),'utf8');
-		console.log("Tests saved to file.");
-	}
-});
+if(typeof global.save !== 'undefined' && global.save){
+	//write saved object to file
+	fs.writeFileSync(filepath,JSON.stringify(obj,null,2),'utf8');
+	console.log("Tests saved to file.");
+}
 
 module.exports = Tests;
