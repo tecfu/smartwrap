@@ -48,17 +48,18 @@ function smartWrap(text,options){
 	var unfilteredWords = [];
 
 	//to trim or not to trim...
+	var modifiedText = text;
 	if(wrapObj.trim){
-		text = text.trim();
+		modifiedText = modifiedText.trim();
 	}
 	
 	if(wrapObj.splitAt.indexOf('\t')!==-1){
 		//split at both spaces and tabs
-		unfilteredWords = text.split(/ |\t/i);
+		unfilteredWords = modifiedText.split(/ |\t/i);
 	}
 	else{
 		//split at whitespace
-		unfilteredWords = text.split(' ');
+		unfilteredWords = modifiedText.split(' ');
 	}
 	
 	//remove empty array elements
@@ -78,7 +79,7 @@ function smartWrap(text,options){
 		spaceRemaining = wrapObj.calculateSpaceRemaining(wrapObj);
 		word = wrapObj.words.shift();
 		wordlength = Wcwidth(word);
-		
+debugger;
 		switch(true){
 			//1- Word is too long for an empty line and must be broken
 			case(wrapObj.lineLength < wordlength):
@@ -103,8 +104,8 @@ function smartWrap(text,options){
 			default:
 				//add word to line
 				wrapObj.lines[wrapObj.currentLine].push(word);
-				//reduce space remaining
-				wrapObj.spacesUsed += wordlength;
+				//reduce space remaining (add a space between words)
+				wrapObj.spacesUsed += wordlength + 1;
 				//increment iterator
 				i++;
 				
