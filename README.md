@@ -16,3 +16,5 @@ console.log(Smartwrap(exampleText1,{
 字
 符
 ```
+*Because these are wide characters and occupy 2 spaces, even though 
+in javascript their string length is 1.
