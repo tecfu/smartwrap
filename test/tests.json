@@ -27,27 +27,27 @@
   {
     "input": "breakthislonginput",
     "width": 0,
-    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+    "output": "br\nea\nkt\nhi\nsl\non\ngi\nnp\nut"
   },
   {
     "input": "breakthislonginput",
     "width": 1,
-    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+    "output": "br\nea\nkt\nhi\nsl\non\ngi\nnp\nut"
   },
   {
     "input": "breakthislonginput",
     "width": 2,
-    "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
+    "output": "br\nea\nkt\nhi\nsl\non\ngi\nnp\nut"
   },
   {
     "input": "breakthislonginput",
     "width": 4,
-    "output": "brea\nkthi\nslon\ngstr\ning"
+    "output": "brea\nkthi\nslon\nginp\nut"
   },
   {
     "input": "breakthislonginput",
     "width": 6,
-    "output": "breakt\nhislon\ngstrin\ng"
+    "output": "breakt\nhislon\nginput"
   },
   {
     "input": "breakthislonginput",
