@@ -62,6 +62,6 @@
   {
     "input": "And its corresponding longer value",
     "width": 19,
-    "output": "And its correspondi\nng longer value"
+    "output": "And its\ncorresponding\nlonger value"
   }
 ]
