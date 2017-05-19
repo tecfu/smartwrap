@@ -1,62 +1,67 @@
 [
   {
-    "string": "宽字符",
+    "input": "宽字符",
     "width": 0,
     "output": "宽\n字\n符"
   },
   {
-    "string": "宽字符",
+    "input": "宽字符",
     "width": 1,
     "output": "宽\n字\n符"
   },
   {
-    "string": "宽字符",
+    "input": "宽字符",
     "width": 2,
     "output": "宽\n字\n符"
   },
   {
-    "string": "宽字符",
+    "input": "宽字符",
     "width": 4,
     "output": "宽字\n符"
   },
   {
-    "string": "宽字符",
+    "input": "宽字符",
     "width": 6,
     "output": "宽字符"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 0,
     "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 1,
     "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 2,
     "output": "br\nea\nkt\nhi\nsl\non\ngs\ntr\nin\ng"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 4,
     "output": "brea\nkthi\nslon\ngstr\ning"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 6,
     "output": "breakt\nhislon\ngstrin\ng"
   },
   {
-    "string": "breakthislongstring",
+    "input": "breakthislonginput",
     "width": 19,
-    "output": "breakthislongstring"
+    "output": "breakthislonginput"
   },
   {
-    "string": "LordPablo⚡️",
+    "input": "LordPablo⚡️",
     "width": 10,
     "output": "LordPablo⚡️"
+  },
+  {
+    "input": "And its corresponding longer value",
+    "width": 19,
+    "output": "And its correspondi\nng longer value"
   }
 ]
