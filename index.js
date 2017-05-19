@@ -21,6 +21,7 @@ function smartWrap(text,options){
 	defaults.skipPadding = false; //set to true when padding set too wide for line length
 	defaults.spacesUsed = 0; //spaces used so far on current line
 	defaults.splitAt = [" ","\t"];
+	defaults.trim = true;
 	defaults.width = 10; 
 	defaults.words = [];
 	
@@ -45,6 +46,12 @@ function smartWrap(text,options){
 	}
 	//Break input into array of characters split by whitespace and/or tabs
 	var unfilteredWords = [];
+
+	//to trim or not to trim...
+	if(wrapObj.trim){
+		text = text.trim();
+	}
+	
 	if(wrapObj.splitAt.indexOf('\t')!==-1){
 		//split at both spaces and tabs
 		unfilteredWords = text.split(/ |\t/i);
