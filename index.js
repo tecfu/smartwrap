@@ -79,7 +79,7 @@ function smartWrap(text,options){
 		spaceRemaining = wrapObj.calculateSpaceRemaining(wrapObj);
 		word = wrapObj.words.shift();
 		wordlength = Wcwidth(word);
-debugger;
+		
 		switch(true){
 			//1- Word is too long for an empty line and must be broken
 			case(wrapObj.lineLength < wordlength):
