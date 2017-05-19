@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 				options: {
 					ui : 'bdd',
 					require: [
-						function(){ global.save = 1; } //pass save as true when generating/saving test output
+						function(){ global.save = true; } //pass save as true when generating/saving test output
 					],
 					reporter: 'spec'
 				},
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
 				options: {
 					ui : 'bdd',
 					require: [
-						function(){ global.display = 1; } 
+						function(){ global.display = true; } 
 					],
 					reporter: 'spec'
 				},
