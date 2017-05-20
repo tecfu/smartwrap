@@ -1,6 +1,6 @@
 {
   "name": "smartwrap",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Wordwrap that doesn't split words unless the word length is greater that the line width.",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": "tecfu",
   "license": "ISC",
   "dependencies": {
-    "breakword": "^1.0.2",
+    "breakword": "^1.0.3",
     "merge": "^1.2.0"
   },
   "devDependencies": {
