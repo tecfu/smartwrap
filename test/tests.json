@@ -1,5 +1,21 @@
 [
   {
+    "input": "2.0",
+    "width": 1
+  },
+  {
+    "input": 2.0,
+    "width": 1
+  },
+  {
+    "input": "2.0",
+    "width": 2
+  },
+  {
+    "input": 2.0,
+    "width": 2
+  },
+  {
     "input": "宽字符",
     "width": 0,
     "output": "宽\n字\n符"
