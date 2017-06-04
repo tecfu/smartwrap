@@ -5,7 +5,7 @@ var chai = require('chai');
 var expect = chai.expect;
 var assert = chai.assert;
 var should = chai.should();
-var smartwrap = require('../index.js');
+var smartwrap = require('../src/main.js');
 var filepath = 'test/tests.json';
 var test = function(testResult,savedResult){
 	it('Strings should match',function(){
