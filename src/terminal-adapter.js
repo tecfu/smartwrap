@@ -2,9 +2,26 @@
 
 let Smartwrap = require('./main.js');
 let yargs = require('yargs');
+yargs.option('paddingLeft', {
+	default: 0,
+	describe: 'Set the left padding of the output'
+});
+yargs.option('paddingRight', {
+	default: 0,
+	describe: 'Set the right padding of the output'
+});
+yargs.option('splitAt', {
+	default: [" ","\t"],
+	describe: 'Characters at which to split input'
+});
+yargs.option('trim', {
+	default: true,
+	describe: 'Trim the whitespace from end of input'
+});
 yargs.option('width', {
   alias: 'w',
-  describe: 'set the line width of the output',
+	default: 10,
+  describe: 'Set the line width of the output (in spaces)',
   demandOption: true,
 	coerce:function(arg){
 		if(isNaN(arg*1)) {
