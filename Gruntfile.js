@@ -55,4 +55,8 @@ module.exports = function(grunt) {
 		'mochaTest:display'
 	]);
 
+	//quick alias
+	grunt.registerTask('t',[
+		'mochaTest:run'
+	]);
 };
