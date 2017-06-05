@@ -1,8 +1,11 @@
 {
   "name": "smartwrap",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Wordwrap that doesn't split words unless the word length is greater that the line width.",
-  "main": "index.js",
+  "main": "src/main.js",
+  "bin": {
+    "smartwrap": "src/terminal-adapter.js"
+  },
   "scripts": {
     "test": "grunt t"
   },
@@ -17,7 +20,8 @@
   "license": "ISC",
   "dependencies": {
     "breakword": "^1.0.3",
-    "merge": "^1.2.0"
+    "merge": "^1.2.0",
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "grunt-mocha-test": "^0.13.2",
