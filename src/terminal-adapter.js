@@ -31,12 +31,24 @@ yargs.option('width', {
 	}
 });
 
+//create options object
+let options = {};
+[
+	'paddingLeft',
+	'paddingRight',
+	'splitAt',
+	'trim',
+	'width'
+].forEach(function(key){
+	if(typeof yargs.argv[key] !== undefined){
+		options[key] = yargs.argv[key]
+	}
+});
+
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', function(chunk) {
-	let out = Smartwrap(chunk,{
-		width: yargs.argv.width
-	});
+	let out = Smartwrap(chunk,options);
 	console.log(out);
 });
 
