@@ -1,3 +1,5 @@
+'use strict';
+
 function smartWrap(text,options){
 
   options = options || {};
