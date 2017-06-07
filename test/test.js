@@ -1,26 +1,26 @@
-var Tests = {};
-var fs = require('fs'); 
-//var glob = require('glob');
-var chai = require('chai');
-var expect = chai.expect;
-var assert = chai.assert;
-var should = chai.should();
-var smartwrap = require('../src/main.js');
-var filepath = 'test/tests.json';
-var test = function(testResult,savedResult){
+let Tests = {};
+let fs = require('fs'); 
+//let glob = require('glob');
+let chai = require('chai');
+let expect = chai.expect;
+let assert = chai.assert;
+let should = chai.should();
+let smartwrap = require('../src/main.js');
+let filepath = 'test/tests.json';
+let test = function(testResult,savedResult){
   it('Strings should match',function(){
     testResult.should.equal(savedResult);
   })
 };
 
 //get test list
-var str = fs.readFileSync(filepath,{
+let str = fs.readFileSync(filepath,{
   encoding : 'utf-8'
 });
 
-var obj = JSON.parse(str);
+let obj = JSON.parse(str);
 
-for(var i in obj){  
+for(let i in obj){  
   
   //generate new output 
   let options = {};
@@ -36,7 +36,7 @@ for(var i in obj){
     }
   });
 
-  var testResult = smartwrap(obj[i].input,options);
+  let testResult = smartwrap(obj[i].input,options);
 
   console.log("Test Properties:",obj[i]);
   console.log("12345678901234567890");
