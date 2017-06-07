@@ -1,6 +1,6 @@
 {
   "name": "smartwrap",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Wordwrap that doesn't split words unless the word length is greater that the line width.",
   "main": "src/main.js",
   "bin": {
