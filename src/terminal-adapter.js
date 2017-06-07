@@ -2,6 +2,11 @@
 
 let Smartwrap = require('./main.js');
 let yargs = require('yargs');
+yargs.option('minWidth', {
+  choices: [1,2],
+  default: 2,
+  describe: 'Never change this unless you are certin you are not using wide characters and you want a column 1 space wide. Then change to 1.'
+});
 yargs.option('paddingLeft', {
   default: 0,
   describe: 'Set the left padding of the output'
@@ -34,6 +39,7 @@ yargs.option('width', {
 //create options object
 let options = {};
 [
+  'minWidth',
   'paddingLeft',
   'paddingRight',
   'splitAt',
