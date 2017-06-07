@@ -40,7 +40,7 @@ let options = {};
   'trim',
   'width'
 ].forEach(function(key){
-  if(typeof yargs.argv[key] !== undefined){
+  if(typeof yargs.argv[key] !== 'undefined'){
     options[key] = yargs.argv[key]
   }
 });
