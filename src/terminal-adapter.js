@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 let Smartwrap = require('./main.js');
 let yargs = require('yargs');
