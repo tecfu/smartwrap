@@ -1,3 +1,5 @@
+'use strict';
+
 let Tests = {};
 let fs = require('fs'); 
 //let glob = require('glob');
