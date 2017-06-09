@@ -59,3 +59,7 @@ console.log(Smartwrap(exampleText1,{
                                                      [required] [default: 10]
 ```
 
+## Compatibility 
+
+node 4.0 <
+
