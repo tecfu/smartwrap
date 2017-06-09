@@ -17,7 +17,7 @@
     "wordwrap"
   ],
   "author": "tecfu",
-  "license": "ISC",
+  "license": "GPL-2.0",
   "dependencies": {
     "breakword": "^1.0.3",
     "merge": "^1.2.0",
