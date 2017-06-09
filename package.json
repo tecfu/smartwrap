@@ -1,10 +1,10 @@
 {
   "name": "smartwrap",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Automatically breaks long words.",
-  "main": "dist/main.js",
+  "main": "src/main.js",
   "bin": {
-    "smartwrap": "dist/terminal-adapter.js"
+    "smartwrap": "src/terminal-adapter.js"
   },
   "scripts": {
     "test": "grunt t"
