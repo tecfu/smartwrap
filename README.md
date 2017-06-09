@@ -1,4 +1,7 @@
 # smartwrap
+
+[![Build Status](https://travis-ci.org/tecfu/smartwrap.svg?branch=master)](https://travis-ci.org/tecfu/smartwrap) [![Dependency Status](https://david-dm.org/tecfu/smartwrap.png)](https://david-dm.org/tecfu/smartwrap) [![NPM version](https://badge.fury.io/js/smartwrap.svg)](http://badge.fury.io/js/smartwrap) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+
 Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Automatically breaks long words.
 
 ## Why? 
@@ -58,4 +61,12 @@ console.log(Smartwrap(exampleText1,{
   --width, -w     Set the line width of the output (in spaces)
                                                      [required] [default: 10]
 ```
+
+## Compatibility 
+
+node 4.0 <
+
+## License
+
+[GPL 2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
