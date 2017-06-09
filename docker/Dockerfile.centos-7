@@ -1,0 +1,48 @@
+FROM centos:7
+
+RUN yum install -y epel-release
+
+# Install nodejs 
+# RUN yum install -y nodejs npm
+# RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+# Use NVM to manage node
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+nvm install 4
+nvm install 5
+nvm install 6
+nvm install 7
+nvm install 8
+
+# Install bzip2 
+RUN yum install -y bzip2
+
+RUN yum install -y git
+
+# Install smartwrap
+RUN git clone --branch 2.x https://www.github.com/tecfu/smartwrap
+
+# Install grunt
+RUN npm install grunt-cli -g
+
+# Install dev dependencies
+WORKDIR /smartwrap
+RUN node --version
+RUN cat package.json
+RUN npm install
+
+# Run unit tests
+nvm use 4
+RUN grunt t
+
+nvm use 5
+RUN grunt t
+
+nvm use 6
+RUN grunt t
+
+nvm use 7
+RUN grunt t
+
+nvm use 8
+RUN grunt tUN grunt t
