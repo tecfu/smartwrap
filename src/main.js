@@ -3,7 +3,6 @@
 function smartWrap(text,options){
 
   options = options || {};
-  let Merge = require('merge');
   let Wcwidth = require('wcwidth');
   let Breakword = require('breakword');
   
@@ -27,7 +26,7 @@ function smartWrap(text,options){
   defaults.width = 10; 
   defaults.words = [];
   
-  let wrapObj = Merge({},defaults,options);
+  let wrapObj = Object.assign({},defaults,options);
 
   //make sure correct sign on padding
   wrapObj.paddingLeft = Math.abs(wrapObj.paddingLeft);
