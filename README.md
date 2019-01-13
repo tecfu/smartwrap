@@ -1,6 +1,6 @@
 # smartwrap
 
-[![Build Status](https://travis-ci.org/tecfu/smartwrap.svg?branch=master)](https://travis-ci.org/tecfu/smartwrap) [![Dependency Status](https://david-dm.org/tecfu/smartwrap.png)](https://david-dm.org/tecfu/smartwrap) [![NPM version](https://badge.fury.io/js/smartwrap.svg)](http://badge.fury.io/js/smartwrap) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+[![Build Status](https://travis-ci.org/tecfu/smartwrap.svg?branch=master)](https://travis-ci.org/tecfu/smartwrap) [![Dependency Status](https://david-dm.org/tecfu/smartwrap.png)](https://david-dm.org/tecfu/smartwrap) [![NPM version](https://badge.fury.io/js/smartwrap.svg)](http://badge.fury.io/js/smartwrap)
 
 Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Automatically breaks long words.
 
