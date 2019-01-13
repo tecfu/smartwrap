@@ -26,7 +26,7 @@ RUN apt-get install -y nodejs
 
 # Install smartwrap
 RUN apt-get install git -y
-RUN git clone --branch dev https://www.github.com/tecfu/smartwrap
+RUN git clone --branch master https://www.github.com/tecfu/smartwrap
 
 # Install grunt
 RUN bash -i -c 'npm install grunt-cli -g'
