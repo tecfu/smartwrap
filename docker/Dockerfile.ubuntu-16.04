@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.5
+FROM ubuntu:16.04.3
 
 # make /bin/sh symlink to bash instead of dash:
 RUN echo "dash dash/sh boolean false" | debconf-set-selections
@@ -10,7 +10,7 @@ RUN apt-get update
 # Install nodejs
 RUN apt-get install curl -y
 RUN apt-get install python-software-properties -y
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
 RUN apt-get update
 RUN apt-get install -y nodejs
 

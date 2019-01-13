@@ -11,7 +11,7 @@ RUN yum install -y bzip2
 RUN yum install -y git
 
 # Install smartwrap
-RUN git clone --branch 2.x https://www.github.com/tecfu/smartwrap
+RUN git clone --branch dev https://www.github.com/tecfu/smartwrap
 
 # Install grunt
 RUN npm install grunt-cli -g
