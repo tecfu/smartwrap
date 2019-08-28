@@ -1,13 +1,26 @@
 'use strict';
 
-function smartWrap(text,options){
+let Wcwidth = require('wcwidth');
+let Breakword = require('breakword');
+
+function smartWrap(input, options) {
+  //in case a template literal was passed that has newling characters,
+  //split string by newlines and process each resulting string 
+  const str = input.toString()
+  const strArr = str.split("\n").map( string => {
+    return wrap(string, options)
+  })
+
+  return strArr.join("\n")
+}
+
+function wrap(text,options){
 
   options = options || {};
-  let Wcwidth = require('wcwidth');
-  let Breakword = require('breakword');
-  
   let defaults = {};
-  defaults.calculateSpaceRemaining = function(obj,i){//i is in case someone wants to customize based on line index
+
+  defaults.calculateSpaceRemaining = function(obj,i){
+    //i is in case someone wants to customize based on line index
     return Math.max(obj.lineLength - obj.spacesUsed - obj.paddingLeft - obj.paddingRight,0);
   }; //function to set starting line length
   defaults.currentLine = 0; //index of current line in 'lines[]'
