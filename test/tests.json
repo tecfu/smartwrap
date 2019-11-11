@@ -98,5 +98,10 @@
     "input": "The use of the secure-rm CLI is deprecated.\nMigrate over -> secure-rm-cli. Run:\nnpm un secure-rm -g\nnpm i secure-rm-cli -g",
     "width": 50,
     "output": "The use of the secure-rm CLI is deprecated.\nMigrate over -> secure-rm-cli. Run:\nnpm un secure-rm -g\nnpm i secure-rm-cli -g"
+  },
+  {
+    "input": "苹果片",
+    "width": 5,
+    "output": "苹果\n片"
   }
 ]

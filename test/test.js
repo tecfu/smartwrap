@@ -1,16 +1,17 @@
 'use strict';
 
 let Tests = {};
-let fs = require('fs'); 
-//let glob = require('glob');
-let chai = require('chai');
-let expect = chai.expect;
-let assert = chai.assert;
-let should = chai.should();
-let smartwrap = require(__dirname+'/../src/main.js');
-let filepath = __dirname+'/tests.json';
+const fs = require('fs'); 
+//const glob = require('glob');
+const chai = require('chai');
+const expect = chai.expect;
+const assert = chai.assert;
+const should = chai.should();
+const smartwrap = require(__dirname+'/../src/main.js');
+const filepath = __dirname+'/tests.json';
+
 let test = function(testResult,savedResult){
-  it('Strings should match',function(){
+  it(`${testResult} should match ${savedResult}`,function(){
     testResult.should.equal(savedResult);
   })
 };
