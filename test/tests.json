@@ -103,5 +103,18 @@
     "input": "苹果片",
     "width": 5,
     "output": "苹果\n片"
+  },
+  {
+    "input": "break at word",
+    "width": 10,
+    "minWidth": 1,
+    "output": "break at\nword"
+  },
+  {
+    "input": "break at word",
+    "width": 10,
+    "minWidth": 1,
+    "output": "break at w\nord",
+    "breakword": true
   }
 ]

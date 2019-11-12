@@ -11,7 +11,7 @@ const smartwrap = require(__dirname+'/../src/main.js');
 const filepath = __dirname+'/tests.json';
 
 let test = function(testResult,savedResult){
-  it(`${testResult} should match ${savedResult}`,function(){
+  it(`'${testResult}' should match '${savedResult}'`,function(){
     testResult.should.equal(savedResult);
   })
 };
@@ -32,7 +32,8 @@ for(let i in obj){
     'minWidth',
     'paddingLeft',
     'paddingRight',
-    'trim'
+    'trim',
+    'breakword'
   ].forEach(function(element){
     if (typeof obj[i][element] !== 'undefined') {
      options[element] = obj[i][element]; 

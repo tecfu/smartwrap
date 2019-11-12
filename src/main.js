@@ -14,31 +14,36 @@ function smartWrap(input, options) {
   return strArr.join("\n")
 }
 
+const defaults = () => {
+  let obj = {}
+
+  obj.breakword = false
+  obj.calculateSpaceRemaining = function(obj) {
+    return Math.max(obj.lineLength - obj.spacesUsed - obj.paddingLeft - obj.paddingRight, 0)
+  } //function to set starting line length
+  obj.currentLine = 0 //index of current line in 'lines[]'
+  obj.input = [] //input string split by whitespace
+  obj.lines = [
+    []
+  ] //assume at least one line
+  obj.minWidth = 2 //fallback to if width set too narrow
+  obj.paddingLeft = 0
+  obj.paddingRight = 0
+  obj.returnFormat = "string" //or 'array'
+  obj.skipPadding = false //set to true when padding set too wide for line length
+  obj.spacesUsed = 0 //spaces used so far on current line
+  obj.splitAt = [" ","\t"]
+  obj.trim = true
+  obj.width = 10
+  obj.words = []
+
+  return obj
+}
+
 function wrap(text,options) {
 
   options = options || {}
-  let defaults = {}
-
-  defaults.calculateSpaceRemaining = function(obj) {
-    return Math.max(obj.lineLength - obj.spacesUsed - obj.paddingLeft - obj.paddingRight, 0)
-  } //function to set starting line length
-  defaults.currentLine = 0 //index of current line in 'lines[]'
-  defaults.input = [] //input string split by whitespace
-  defaults.lines = [
-    []
-  ] //assume at least one line
-  defaults.minWidth = 2 //fallback to if width set too narrow
-  defaults.paddingLeft = 0
-  defaults.paddingRight = 0
-  defaults.returnFormat = "string" //or 'array'
-  defaults.skipPadding = false //set to true when padding set too wide for line length
-  defaults.spacesUsed = 0 //spaces used so far on current line
-  defaults.splitAt = [" ","\t"]
-  defaults.trim = true
-  defaults.width = 10
-  defaults.words = []
-
-  let wrapObj = Object.assign({},defaults,options)
+  let wrapObj = Object.assign({},defaults(),options)
 
   //make sure correct sign on padding
   wrapObj.paddingLeft = Math.abs(wrapObj.paddingLeft)
@@ -55,7 +60,7 @@ function wrap(text,options) {
   }
 
   //Break input into array of characters split by whitespace and/or tabs
-  let unfilteredWords = []
+  let wordArray = []
 
   //to trim or not to trim...
   let modifiedText = text.toString()
@@ -63,18 +68,25 @@ function wrap(text,options) {
     modifiedText = modifiedText.trim()
   }
 
-  if(wrapObj.splitAt.indexOf("\t")!==-1) {
-    //split at both spaces and tabs
-    unfilteredWords = modifiedText.split(/ |\t/i)
-  } else{
-    //split at whitespace
-    unfilteredWords = modifiedText.split(" ")
+  if(!wrapObj.breakword){
+    //break string into words
+    if(wrapObj.splitAt.indexOf("\t")!==-1) {
+      //split at both spaces and tabs
+      wordArray = modifiedText.split(/ |\t/i)
+    } else{
+      //split at whitespace
+      wordArray = modifiedText.split(" ")
+    }
+  }
+  else {
+    //do not break string into words
+    wordArray = [modifiedText]
   }
 
   //remove empty array elements
-  unfilteredWords.forEach(function(val) {
+  wrapObj.words = wordArray.filter(val => {
     if (val.length > 0) {
-      wrapObj.words.push(val)
+      return true  
     }
   })
 
