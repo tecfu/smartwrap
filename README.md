@@ -63,7 +63,10 @@ console.log(smartwrap(exampleText2,{
 
 - Output:
 
-"break at\nword"
+```
+break at
+word
+```
 
 ### Breaking Words When Wrapping Strings
 
@@ -76,7 +79,10 @@ console.log(smartwrap(exampleText2,{
 
 - Output:
 
-"break at w\nord"
+```
+break at w
+ord
+```
 
 ## Options
 
