@@ -1,5 +1,12 @@
 [
   {
+    "input": "aaa bbb ccc",
+    "width": 1,
+    "trim": true,
+    "minWidth": 1,
+    "output": "a\na\na\nb\nb\nb\nc\nc\nc"
+  },
+  {
     "input": "2.0",
     "width": 1,
     "minWidth": 1,
