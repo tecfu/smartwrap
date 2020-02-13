@@ -7,6 +7,10 @@ yargs.option("breakword", {
   default: false,
   describe: "Choose whether or not to break words when wrapping a string"
 })
+yargs.option("errorChar", {
+  default: "�",
+  describe: "Placeholder for wide characters when minWidth < 2"
+})
 yargs.option("minWidth", {
   choices: [1,2],
   default: 2,

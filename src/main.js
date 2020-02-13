@@ -1,7 +1,7 @@
 "use strict"
 
-let Wcwidth = require("wcwidth")
-let Breakword = require("breakword")
+let wcwidth = require("wcwidth")
+let breakword = require("breakword")
 
 function smartWrap(input, options) {
   //in case a template literal was passed that has newling characters,
@@ -29,6 +29,7 @@ const defaults = () => {
   obj.minWidth = 2 //fallback to if width set too narrow
   obj.paddingLeft = 0
   obj.paddingRight = 0
+  obj.errorChar = "�"
   obj.returnFormat = "string" //or 'array'
   obj.skipPadding = false //set to true when padding set too wide for line length
   obj.spacesUsed = 0 //spaces used so far on current line
@@ -43,6 +44,16 @@ const defaults = () => {
 function wrap(text,options) {
 
   options = options || {}
+
+  if (options.errorChar) {
+    // only allow a single errorChar
+    options.errorChar = options.errorChar.split('')[0] 
+
+    // errorChar must not be wide character
+    if (wcwidth(options.errorChar) > 1)
+      throw new Error(`Error character cannot be a wide character (${options.errorChar})`)
+  }
+      
   let wrapObj = Object.assign({},defaults(),options)
 
   //make sure correct sign on padding
@@ -95,20 +106,26 @@ function wrap(text,options) {
   while(wrapObj.words.length > 0) {
     spaceRemaining = wrapObj.calculateSpaceRemaining(wrapObj)
     word = wrapObj.words.shift()
-    wordlength = Wcwidth(word)
+    let wordLength = wcwidth(word)
 
     switch(true) {
-      //1- Word is too long for an empty line and must be broken
-      case(wrapObj.lineLength < wordlength):
+  
+      // Too long for an empty line and is a single character
+      case(wrapObj.lineLength < wordLength && word.split('').length === 1):
+          wrapObj.words.unshift(wrapObj.errorChar)
+          break
+
+       // Too long for an empty line, must be broken between 2 lines
+      case(wrapObj.lineLength < wordLength):
         //Break it, then re-insert its parts into wrapObj.words
         //so can loop back to re-handle each word
-        splitIndex = Breakword(word,wrapObj.lineLength)
+        splitIndex = breakword(word,wrapObj.lineLength)
         wrapObj.words.unshift(word.substr(0,splitIndex + 1)) //+1 for substr fn
         wrapObj.words.splice(1,0,word.substr(splitIndex + 1))//+1 for substr fn
         break
 
-      //2- Word is too long for current line and must be wrapped
-      case(spaceRemaining < wordlength):
+      // Not enough space remaining in line, must be wrapped to next line
+      case(spaceRemaining < wordLength):
         //add a new line to our array of lines
         wrapObj.lines.push([])
         //note carriage to new line in counter
@@ -117,13 +134,12 @@ function wrap(text,options) {
         wrapObj.spacesUsed = 0
         /* falls through */
 
-      //3- Word fits on current line
-      //caution: falls through
+      // Fits on current line
       default:
         //add word to line
         wrapObj.lines[wrapObj.currentLine].push(word)
         //reduce space remaining (add a space between words)
-        wrapObj.spacesUsed += wordlength + 1
+        wrapObj.spacesUsed += wordLength + 1
     }
   }
 

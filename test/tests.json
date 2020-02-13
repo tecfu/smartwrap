@@ -1,5 +1,12 @@
 [
   {
+    "input": "特abc制",
+    "width": 1,
+    "trim": true,
+    "minWidth": 1,
+    "output": "�\na\nb\nc\n�"
+  },
+  {
     "input": "aaa bbb ccc",
     "width": 1,
     "trim": true,

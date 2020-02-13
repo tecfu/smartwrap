@@ -87,16 +87,18 @@ ord
 ## Options
 
 ```sh
-  --breakword     Choose whether or not to break words when wrapping a string
+--breakword       Choose whether or not to break words when wrapping a string
                                                                  [default: false]
-  --minWidth      Never change this unless you are certin you are not using
+--errorChar       Placeholder for wide characters when minWidth < 2
+                                                                 [default: �]
+--minWidth        Never change this unless you are certin you are not using
                   wide characters and you want a column 1 space wide. Then
                   change to 1.                   [choices: 1, 2] [default: 2]
-  --paddingLeft   Set the left padding of the output             [default: 0]
-  --paddingRight  Set the right padding of the output            [default: 0]
-  --splitAt       Characters at which to split input    [default: [" ","\t"]]
-  --trim          Trim the whitespace from end of input       [default: true]
-  --width, -w     Set the line width of the output (in spaces)
+--paddingLeft     Set the left padding of the output             [default: 0]
+--paddingRight    Set the right padding of the output            [default: 0]
+--splitAt         Characters at which to split input    [default: [" ","\t"]]
+--trim            Trim the whitespace from end of input       [default: true]
+--width, -w       Set the line width of the output (in spaces)
                                                      [required] [default: 10]
 ```
 
