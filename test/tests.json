@@ -7,6 +7,13 @@
     "output": "�\na\nb\nc\n�"
   },
   {
+    "input": "😀test",
+    "width": 1,
+    "trim": true,
+    "minWidth": 1,
+    "output": "�\nt\ne\ns\nt"
+  },
+  {
     "input": "aaa bbb ccc",
     "width": 1,
     "trim": true,

@@ -111,7 +111,7 @@ function wrap(text,options) {
     switch(true) {
   
       // Too long for an empty line and is a single character
-      case(wrapObj.lineLength < wordLength && word.split('').length === 1):
+      case(wrapObj.lineLength < wordLength && [...word].length === 1):
           wrapObj.words.unshift(wrapObj.errorChar)
           break
 
@@ -120,8 +120,9 @@ function wrap(text,options) {
         //Break it, then re-insert its parts into wrapObj.words
         //so can loop back to re-handle each word
         splitIndex = breakword(word,wrapObj.lineLength)
-        wrapObj.words.unshift(word.substr(0,splitIndex + 1)) //+1 for substr fn
-        wrapObj.words.splice(1,0,word.substr(splitIndex + 1))//+1 for substr fn
+        let splitWord = [...word]
+        wrapObj.words.unshift(splitWord.slice(0, splitIndex + 1).join(""))
+        wrapObj.words.splice(1,0,splitWord.slice(splitIndex + 1).join("")) //+1 for substr fn
         break
 
       // Not enough space remaining in line, must be wrapped to next line
