@@ -1,18 +1,6 @@
-"use strict"
-
 let wcwidth = require("wcwidth")
 let breakword = require("breakword")
 
-function smartWrap(input, options) {
-  // in case a template literal was passed that has newling characters,
-  // split string by newlines and process each resulting string
-  const str = input.toString()
-  const strArr = str.split("\n").map( string => {
-    return wrap(string, options)
-  })
-
-  return strArr.join("\n")
-}
 
 const defaults = () => {
   let obj = {}
@@ -41,60 +29,71 @@ const defaults = () => {
   return obj
 }
 
-function wrap(text, options) {
 
-  options = options || {}
+const validateInput = (text, options) => {
 
-  if (options.errorChar) {
+  // text validation
+  let wText = text.toString()
+
+
+  // options validation
+  let wConfig = Object.assign({}, defaults(), options || {})
+
+  if (wConfig.errorChar) {
     // only allow a single errorChar
-    options.errorChar = options.errorChar.split("")[0]
+    wConfig.errorChar = wConfig.errorChar.split("")[0]
 
     // errorChar must not be wide character
-    if (wcwidth(options.errorChar) > 1)
-      throw new Error(`Error character cannot be a wide character (${options.errorChar})`)
+    if (wcwidth(wConfig.errorChar) > 1)
+      throw new Error(`Error character cannot be a wide character (${wConfig.errorChar})`)
   }
 
-  let wrapObj = Object.assign({}, defaults(), options)
-
   // make sure correct sign on padding
-  wrapObj.paddingLeft = Math.abs(wrapObj.paddingLeft)
-  wrapObj.paddingRight = Math.abs(wrapObj.paddingRight)
+  wConfig.paddingLeft = Math.abs(wConfig.paddingLeft)
+  wConfig.paddingRight = Math.abs(wConfig.paddingRight)
 
-  wrapObj.lineLength = wrapObj.width
-    - wrapObj.paddingLeft
-    - wrapObj.paddingRight
+  wConfig.lineLength = wConfig.width
+    - wConfig.paddingLeft
+    - wConfig.paddingRight
 
-  if(wrapObj.lineLength < wrapObj.minWidth) {
+  if(wConfig.lineLength < wConfig.minWidth) {
     // skip padding if lineLength too narrow
-    wrapObj.skipPadding = true
-    wrapObj.lineLength = wrapObj.minWidth
+    wConfig.skipPadding = true
+    wConfig.lineLength = wConfig.minWidth
   }
 
   // to trim or not to trim...
-  let modifiedText = text.toString()
-  if(wrapObj.trim) {
-    modifiedText = modifiedText.trim()
+  if(wConfig.trim) {
+    wText = wText.trim()
   }
+
+  return { wText, wConfig }
+}
+
+
+const wrap = (text, options) => {
+
+  let { wText, wConfig } = validateInput(text, options)
 
   // array of characters split by whitespace and/or tabs
   let wordArray = []
 
-  if(!wrapObj.breakword) {
+  if(!wConfig.breakword) {
     // break string into words
-    if(wrapObj.splitAt.indexOf("\t")!==-1) {
+    if(wConfig.splitAt.indexOf("\t")!==-1) {
       // split at both spaces and tabs
-      wordArray = modifiedText.split(/ |\t/i)
+      wordArray = wText.split(/ |\t/i)
     } else{
       // split at whitespace
-      wordArray = modifiedText.split(" ")
+      wordArray = wText.split(" ")
     }
   } else {
     // do not break string into words
-    wordArray = [modifiedText]
+    wordArray = [wText]
   }
 
   // remove empty array elements
-  wrapObj.words = wordArray.filter(val => {
+  wConfig.words = wordArray.filter(val => {
     if (val.length > 0) {
       return true
     }
@@ -102,59 +101,59 @@ function wrap(text, options) {
 
   let spaceRemaining, splitIndex, word
 
-  while(wrapObj.words.length > 0) {
-    spaceRemaining = wrapObj.calculateSpaceRemaining(wrapObj)
-    word = wrapObj.words.shift()
+  while(wConfig.words.length > 0) {
+    spaceRemaining = wConfig.calculateSpaceRemaining(wConfig)
+    word = wConfig.words.shift()
     let wordLength = wcwidth(word)
 
     switch(true) {
 
       // too long for an empty line and is a single character
-      case(wrapObj.lineLength < wordLength && [...word].length === 1):
-        wrapObj.words.unshift(wrapObj.errorChar)
+      case(wConfig.lineLength < wordLength && [...word].length === 1):
+        wConfig.words.unshift(wConfig.errorChar)
         break
 
         // too long for an empty line, must be broken between 2 lines
-      case(wrapObj.lineLength < wordLength):
-        // break it, then re-insert its parts into wrapObj.words
+      case(wConfig.lineLength < wordLength):
+        // break it, then re-insert its parts into wConfig.words
         // so can loop back to re-handle each word
-        splitIndex = breakword(word, wrapObj.lineLength)
+        splitIndex = breakword(word, wConfig.lineLength)
         let splitWord = [...word]
-        wrapObj.words.unshift(splitWord.slice(0, splitIndex + 1).join(""))
-        wrapObj.words.splice(1, 0, splitWord.slice(splitIndex + 1).join("")) // +1 for substr fn
+        wConfig.words.unshift(splitWord.slice(0, splitIndex + 1).join(""))
+        wConfig.words.splice(1, 0, splitWord.slice(splitIndex + 1).join("")) // +1 for substr fn
         break
 
       // not enough space remaining in line, must be wrapped to next line
       case(spaceRemaining < wordLength):
         // add a new line to our array of lines
-        wrapObj.lines.push([])
+        wConfig.lines.push([])
         // note carriage to new line in counter
-        wrapObj.currentLine++
+        wConfig.currentLine++
         // reset the spacesUsed to 0
-        wrapObj.spacesUsed = 0
+        wConfig.spacesUsed = 0
         /* falls through */
 
       // fits on current line
       // eslint-disable-next-line
       default:
         // add word to line
-        wrapObj.lines[wrapObj.currentLine].push(word)
+        wConfig.lines[wConfig.currentLine].push(word)
         // reduce space remaining (add a space between words)
-        wrapObj.spacesUsed += wordLength + 1
+        wConfig.spacesUsed += wordLength + 1
     }
   }
 
-  if(wrapObj.returnFormat === "array") {
-    return wrapObj.lines
+  if(wConfig.returnFormat === "array") {
+    return wConfig.lines
   } else {
-    let lines = wrapObj.lines.map(function(line) {
+    let lines = wConfig.lines.map(function(line) {
       // restore spaces to line
       line = line.join(" ")
       // add padding to ends of line
-      if(!wrapObj.skipPadding) {
-        line = Array(wrapObj.paddingLeft + 1).join(" ")
+      if(!wConfig.skipPadding) {
+        line = Array(wConfig.paddingLeft + 1).join(" ")
           + line
-          + Array(wrapObj.paddingRight + 1).join(" ")
+          + Array(wConfig.paddingRight + 1).join(" ")
       }
       return line
     })
@@ -163,4 +162,14 @@ function wrap(text, options) {
   }
 }
 
-module.exports = smartWrap
+
+module.exports = (input, options) => {
+  // in case a template literal was passed that has newling characters,
+  // split string by newlines and process each resulting string
+  const str = input.toString()
+  const strArr = str.split("\n").map( string => {
+    return wrap(string, options)
+  })
+
+  return strArr.join("\n")
+}
