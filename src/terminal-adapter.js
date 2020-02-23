@@ -12,7 +12,7 @@ yargs.option("errorChar", {
   describe: "Placeholder for wide characters when minWidth < 2"
 })
 yargs.option("minWidth", {
-  choices: [1,2],
+  choices: [1, 2],
   default: 2,
   describe: "Never change this unless you are certin you are not using wide characters and you want a column 1 space wide, then change to 1"
 })
@@ -25,7 +25,7 @@ yargs.option("paddingRight", {
   describe: "Set the right padding of the output"
 })
 yargs.option("splitAt", {
-  default: [" ","\t"],
+  default: [" ", "\t"],
   describe: "Characters at which to split input"
 })
 yargs.option("trim", {
@@ -45,7 +45,7 @@ yargs.option("width", {
   }
 })
 
-//create options object
+// create options object
 let options = {};
 [
   "minWidth",
@@ -63,9 +63,9 @@ let options = {};
 process.stdin.resume()
 process.stdin.setEncoding("utf8")
 process.stdin.on("data", function(chunk) {
-  let out = Smartwrap(chunk,options)
+  let out = Smartwrap(chunk, options)
   console.log(out)
 })
 
-//yargs = yargs('h').argv;
+// yargs = yargs('h').argv;
 yargs.argv = yargs.help("h").argv
