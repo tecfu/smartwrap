@@ -23,6 +23,7 @@
   "license": "GPL-2.0",
   "dependencies": {
     "breakword": "^1.0.5",
+    "grapheme-splitter": "^1.0.4",
     "wcwidth": "^1.0.1",
     "yargs": "^15.1.0"
   },
