@@ -1,5 +1,13 @@
-const wcwidth = require("wcwidth")
 const breakword = require("breakword")
+const stripansi = require("strip-ansi")
+const wcwidth = require("wcwidth")
+
+
+const ANSIPattern = [
+  "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+  "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))"
+].join("|")
+const ANSIRegex = new RegExp(ANSIPattern, "g")
 
 const defaults = () => {
   let obj = {}
@@ -159,13 +167,124 @@ const wrap = (input, options) => {
 }
 
 
+const splitAnsiInput = (text) => {
+  // get start and end positions for matches
+  let matches = []
+  let textArr = [...text]
+
+  /* eslint-disable */
+  while((result = ANSIRegex.exec(text)) !== null) {
+    matches.push({
+      start: result.index,
+      end: result.index + result[0].length,
+      match: result[0],
+      length: result[0].length
+    })
+  }
+  /* eslint-enable */
+
+
+  if (matches.length < 1) return [] // we have no ANSI escapes, we're done here
+
+  // add start and end positions for non matches
+  matches = matches.reduce((prev, curr) => {
+    // check if space exists between this and last match
+    // get end of previous match
+    let prevEnd = prev[prev.length -1]
+
+    if (prevEnd.end < curr.start) {
+      // insert placeholder
+      prev.push({
+        start: prevEnd.end,
+        end: curr.start,
+        length: curr.start - prevEnd.end,
+        expand: true
+      }, curr)
+    } else {
+      prev.push(curr)
+    }
+    return prev
+  }, [{start: 0, end: 0}])
+    .splice(1) // removes starting accumulator object
+
+
+  // add trailing match if necessary
+  let lastMatchEnd = matches[matches.length - 1].end
+  if (lastMatchEnd < textArr.length - 1) {
+    matches.push({
+      start: lastMatchEnd,
+      end: textArr.length,
+      expand: true
+    })
+  }
+
+
+  let savedArr = matches.map(match => {
+    let value = text.substring(match.start, match.end)
+    return (match.expand) ? [...value] : [value]
+  }).flat(2)
+
+  return savedArr
+}
+
+
+const restoreANSI = (savedArr, processedArr) => {
+  return processedArr.map((char) => {
+    let result
+
+    if (char === "\n") {
+      result = [char]
+    } else {
+      // add everything saved before character match
+      let splicePoint = savedArr.findIndex(element => element === char ) + 1
+      result = savedArr.splice(0, splicePoint)
+    }
+
+    // add all following, consecutive closing tags in case linebreak inerted next
+    const ANSIClosePattern = "^\\x1b\\[([0-9]+)*m"
+    const ANSICloseRegex = new RegExp(ANSIClosePattern) // eslint-disable-line no-control-regex
+    const closeCodes = ["0", "21", "22", "23", "24", "25", "27", "28", "29", "39", "49", "54", "55"]
+
+    let match
+    while (savedArr.length && (match = savedArr[0].match(ANSICloseRegex))) {
+      if (!closeCodes.includes(match[1])) break
+      result.push(savedArr.shift())
+    }
+
+    return result.join("")
+  }).concat(savedArr)
+}
+
+
 module.exports = (input, options) => {
   // in case a template literal was passed that has newling characters,
   // split string by newlines and process each resulting string
-  const str = input.toString()
-  const strArr = str.split("\n").map( string => {
+  let str = input.toString()
+
+  // save input ANSI escape codes to be restored later
+  const savedANSI = splitAnsiInput(str)
+
+  // strip ANSI
+  str = stripansi(str)
+
+  // convert input to array, each element a line
+  const linesArr = str.split("\n").map( string => {
     return wrap(string, options)
   })
 
-  return strArr.join("\n")
+  // return linesArr.join("\n")
+
+  // --- following code re-applies ANSI
+  // convert line arrays to a single string broken by return characters
+  const wrappedStr = linesArr.join("\n")
+
+  // and an ANSI closing character, so style never bleeds
+  // const wrappedStr = linesArr.join(`\u001b\[0m\n`)
+
+  // break that line into single characters
+  let wrappedArr = [...wrappedStr]
+
+  // restore input ANSI escape codes if needed
+  wrappedArr = (savedANSI.length > 0) ? restoreANSI(savedANSI, wrappedArr) : wrappedArr
+  return wrappedArr.join("")
 }
