@@ -171,6 +171,7 @@ const splitAnsiInput = (text) => {
   // get start and end positions for matches
   let matches = []
   let textArr = [...text]
+  let textLength = textArr.length
 
   /* eslint-disable */
   while((result = ANSIRegex.exec(text)) !== null) {
@@ -210,10 +211,10 @@ const splitAnsiInput = (text) => {
 
   // add trailing match if necessary
   let lastMatchEnd = matches[matches.length - 1].end
-  if (lastMatchEnd < textArr.length - 1) {
+  if (lastMatchEnd < textLength) {
     matches.push({
       start: lastMatchEnd,
-      end: textArr.length,
+      end: textLength,
       expand: true
     })
   }
@@ -223,7 +224,7 @@ const splitAnsiInput = (text) => {
     let value = text.substring(match.start, match.end)
     return (match.expand) ? [...value] : [value]
   }).flat(2)
-
+debugger
   return savedArr
 }
 
