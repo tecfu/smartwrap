@@ -2,7 +2,6 @@ const breakword = require("breakword")
 const stripansi = require("strip-ansi")
 const wcwidth = require("wcwidth")
 
-
 const ANSIPattern = [
   "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
   "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))"
@@ -149,19 +148,20 @@ const wrap = (input, options) => {
     }
   }
 
-
   lines = lines.map( line => {
+
     // restore spaces to line
     line = line.join(" ")
+
     // add padding to ends of line
     if(!config.skipPadding) {
       line = Array(config.paddingLeft + 1).join(" ")
         + line
         + Array(config.paddingRight + 1).join(" ")
     }
+
     return line
   })
-
 
   return lines.join("\n")
 }
@@ -224,7 +224,7 @@ const splitAnsiInput = (text) => {
     let value = text.substring(match.start, match.end)
     return (match.expand) ? [...value] : [value]
   }).flat(2)
-debugger
+
   return savedArr
 }
 
@@ -258,34 +258,30 @@ const restoreANSI = (savedArr, processedArr) => {
 
 
 module.exports = (input, options) => {
-  // in case a template literal was passed that has newling characters,
-  // split string by newlines and process each resulting string
-  let str = input.toString()
 
-  // save input ANSI escape codes to be restored later
-  const savedANSI = splitAnsiInput(str)
+  // process each existing line separately to respect existing line breaks
+  const processedLines = input.toString().split("\n").map( string => {
 
-  // strip ANSI
-  str = stripansi(str)
+    // save input ANSI escape codes to be restored later
+    const savedANSI = splitAnsiInput(string)
 
-  // convert input to array, each element a line
-  const linesArr = str.split("\n").map( string => {
-    return wrap(string, options)
+    // strip ANSI
+    string = stripansi(string)
+
+    // add newlines to string
+    string = wrap(string, options)
+
+    // convert into array of characters
+    let charArr = [...string]
+
+    // restore input ANSI escape codes
+    charArr = (savedANSI.length > 0) ? restoreANSI(savedANSI, charArr) : charArr
+
+    // convert array of single characters into array of lines
+    let outArr  = charArr.join("").split("\n")
+
+    return outArr
   })
 
-  // return linesArr.join("\n")
-
-  // --- following code re-applies ANSI
-  // convert line arrays to a single string broken by return characters
-  const wrappedStr = linesArr.join("\n")
-
-  // and an ANSI closing character, so style never bleeds
-  // const wrappedStr = linesArr.join(`\u001b\[0m\n`)
-
-  // break that line into single characters
-  let wrappedArr = [...wrappedStr]
-
-  // restore input ANSI escape codes if needed
-  wrappedArr = (savedANSI.length > 0) ? restoreANSI(savedANSI, wrappedArr) : wrappedArr
-  return wrappedArr.join("")
+  return processedLines.flat(2).join("\n")
 }
