@@ -2,13 +2,16 @@ FROM centos:7
 
 RUN yum install -y epel-release
 
-# Install nodejs 
-RUN yum install -y nodejs npm
-# RUN ln -s /usr/bin/nodejs /usr/bin/node
 # Install bzip2 
 RUN yum install -y bzip2
 
 RUN yum install -y git
+
+# Install nodejs 11
+RUN curl -sL https://rpm.nodesource.com/setup_11.x | bash -
+RUN yum install -y nodejs
+
+# RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Install smartwrap
 RUN git clone --branch master https://www.github.com/tecfu/smartwrap
@@ -21,4 +24,5 @@ WORKDIR /smartwrap
 RUN npm install
 
 # Run unit tests
-RUN grunt t
+RUN node -v
+RUN npm test

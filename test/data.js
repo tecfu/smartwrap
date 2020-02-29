@@ -1,4 +1,4 @@
-[
+module.exports = [
   {
     "input": "特abc制",
     "width": 1,
