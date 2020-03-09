@@ -1,6 +1,8 @@
 const breakword = require("breakword")
 const stripansi = require("strip-ansi")
 const wcwidth = require("wcwidth")
+const flat = require("array.prototype.flat")
+if (!Array.prototype.flat) flat.shim()
 
 const ANSIPattern = [
   "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",

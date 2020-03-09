@@ -104,7 +104,7 @@ ord
 
 ## Compatibility 
 
-node 4.0 <
+node 6.0 <
 
 ## License
 
