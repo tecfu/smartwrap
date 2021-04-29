@@ -108,5 +108,5 @@ node 6.0 <
 
 ## License
 
-[GPL 2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[MIT](https://opensource.org/licenses/MIT)
 
