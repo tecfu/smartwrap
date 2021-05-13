@@ -23,7 +23,7 @@
     "wordwrap"
   ],
   "author": "tecfu",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
     "array.prototype.flat": "^1.2.3",
     "breakword": "^1.0.5",
