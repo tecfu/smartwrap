@@ -1,6 +1,6 @@
 {
   "name": "smartwrap",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Wraps strings with option to break on words.",
   "main": "src/main.js",
   "engines": {

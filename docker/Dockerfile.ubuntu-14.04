@@ -6,9 +6,9 @@ RUN apt-get update
 # Install nodejs
 RUN apt-get install curl -y
 RUN apt-get install python-software-properties -y
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-RUN apt-get update
-RUN apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get update --allow-unauthenticated
+RUN apt-get install -y nodejs --force-yes
 
 # Install smartwrap
 RUN apt-get install git -y
