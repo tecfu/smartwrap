@@ -171,6 +171,7 @@ const wrap = (input, options) => {
 
 const splitAnsiInput = (text) => {
   // get start and end positions for matches
+	let result = null;
   let matches = []
   let textArr = [...text]
   let textLength = textArr.length
