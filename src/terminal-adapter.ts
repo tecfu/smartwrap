@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-'use strict'
+import smartwrap = require('./main')
+import yargs from 'yargs'
 
-const smartwrap = require('./main.js')
-const yargs = require('yargs')
-
-yargs
+const argv = yargs
   .option('breakword', {
     default: false,
     describe: 'Choose whether or not to break words when wrapping a string',
@@ -15,9 +13,10 @@ yargs
     describe: 'Placeholder for wide characters when minWidth < 2'
   })
   .option('minWidth', {
-    choices: [1, 2],
-    default: 2,
-    describe: 'Minimum line width. Use 1 only if you are certain you are not using wide characters and want a 1-space column.'
+    choices: [1, 2] as const,
+    default: 2 as 1 | 2,
+    describe:
+      'Minimum line width. Use 1 only if you are certain you are not using wide characters and want a 1-space column.'
   })
   .option('paddingLeft', {
     default: 0,
@@ -30,7 +29,7 @@ yargs
     type: 'number'
   })
   .option('splitAt', {
-    default: [' ', '\t'],
+    default: [' ', '\t'] as string[],
     describe: 'Characters at which to split input'
   })
   .option('trim', {
@@ -43,7 +42,7 @@ yargs
     default: 10,
     describe: 'Set the line width of the output (in spaces)',
     demandOption: true,
-    coerce: function (arg) {
+    coerce: (arg: string | number): number => {
       const n = Number(arg)
       if (Number.isNaN(n)) {
         throw new Error('Invalid width specified.')
@@ -53,11 +52,10 @@ yargs
   })
   .help('h')
   .alias('h', 'help')
+  .parseSync()
 
-const argv = yargs.argv
-
-const options = {}
-;[
+const options: Parameters<typeof smartwrap>[1] = {}
+const keys = [
   'breakword',
   'errorChar',
   'minWidth',
@@ -66,15 +64,18 @@ const options = {}
   'splitAt',
   'trim',
   'width'
-].forEach(key => {
+] as const
+
+for (const key of keys) {
   if (typeof argv[key] !== 'undefined') {
-    options[key] = argv[key]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(options as any)[key] = argv[key]
   }
-})
+}
 
 process.stdin.resume()
 process.stdin.setEncoding('utf8')
-process.stdin.on('data', function (chunk) {
+process.stdin.on('data', (chunk: string) => {
   const out = smartwrap(chunk, options)
   console.log(out)
 })

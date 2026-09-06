@@ -2,18 +2,21 @@
   "name": "smartwrap",
   "version": "3.0.0",
   "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Wraps strings with option to break on words.",
-  "main": "src/main.js",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "bin": {
-    "smartwrap": "src/terminal-adapter.js"
+    "smartwrap": "dist/terminal-adapter.js"
   },
   "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
     "test": "mocha test/test.js",
-    "test-display": "mocha test/test.js --require test/display-hook.js",
+    "test-display": "npm run build && mocha test/test.js --require test/display-hook.js",
     "lint": "eslint src/",
-    "lint-fix": "eslint src/ --fix"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -25,7 +28,8 @@
     "wide-characters",
     "emoji",
     "ansi",
-    "terminal"
+    "terminal",
+    "typescript"
   ],
   "author": "tecfu",
   "license": "MIT",
@@ -36,12 +40,16 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/strip-ansi": "^5.2.1",
+    "@types/yargs": "^17.0.33",
     "chai": "^4.3.10",
     "eslint": "^8.57.0",
-    "mocha": "^10.7.3"
+    "mocha": "^10.7.3",
+    "typescript": "^5.4.5"
   },
   "files": [
-    "src/",
+    "dist/",
     "LICENSE",
     "README.md"
   ]

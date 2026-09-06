@@ -1,3 +1,5 @@
 node_modules
 Session.vim
 package-lock.json
+dist
+*.tsbuildinfo
