@@ -2,16 +2,33 @@
   "name": "smartwrap",
   "version": "3.0.0",
   "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Wraps strings with option to break on words.",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "./dist/cjs/main.js",
+  "module": "./dist/esm/main.js",
+  "types": "./dist/cjs/main.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/main.d.ts",
+        "default": "./dist/esm/main.js"
+      },
+      "require": {
+        "types": "./dist/cjs/main.d.ts",
+        "default": "./dist/cjs/main.js"
+      },
+      "default": "./dist/cjs/main.js"
+    },
+    "./package.json": "./package.json"
+  },
   "engines": {
     "node": ">=14"
   },
   "bin": {
-    "smartwrap": "dist/terminal-adapter.js"
+    "smartwrap": "./dist/cjs/terminal-adapter.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:cjs && npm run build:esm && node scripts/write-package-jsons.js",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "pretest": "npm run build",
     "test": "mocha test/test.js",
     "test-display": "npm run build && mocha test/test.js --require test/display-hook.js",
@@ -29,7 +46,8 @@
     "emoji",
     "ansi",
     "terminal",
-    "typescript"
+    "typescript",
+    "esm"
   ],
   "author": "tecfu",
   "license": "MIT",

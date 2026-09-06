@@ -1,21 +1,3 @@
 {
-  "compilerOptions": {
-    "target": "ES2019",
-    "module": "commonjs",
-    "lib": ["ES2019"],
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "newLine": "lf"
-  },
-  "include": ["src/**/*", "types/**/*"],
-  "exclude": ["node_modules", "dist", "test"]
+  "extends": "./tsconfig.cjs.json"
 }

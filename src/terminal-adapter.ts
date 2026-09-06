@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import smartwrap = require('./main')
+import smartwrap, { type SmartwrapOptions } from './main'
 import yargs from 'yargs'
 
 const argv = yargs
@@ -54,7 +54,7 @@ const argv = yargs
   .alias('h', 'help')
   .parseSync()
 
-const options: Parameters<typeof smartwrap>[1] = {}
+const options: SmartwrapOptions = {}
 const keys = [
   'breakword',
   'errorChar',

@@ -1,9 +1,9 @@
-import breakword = require('breakword')
-import stripAnsi = require('strip-ansi')
-import wcwidth = require('wcwidth')
+import breakword from 'breakword'
+import stripAnsi from 'strip-ansi'
+import wcwidth from 'wcwidth'
 
 /** Options accepted by smartwrap. */
-interface SmartwrapOptions {
+export interface SmartwrapOptions {
   /** Break words that exceed the remaining line width. Default: false */
   breakword?: boolean
   /** Minimum usable width (1 or 2). Default: 2 */
@@ -287,8 +287,5 @@ function smartwrap(
   return processedLines.flat(2).join('\n')
 }
 
-export = smartwrap
-
-namespace smartwrap {
-  export type Options = SmartwrapOptions
-}
+export default smartwrap
+export { smartwrap }

@@ -21,8 +21,12 @@ npm install -g smartwrap
 ## Usage
 
 ```ts
-import smartwrap = require('smartwrap')
-// or: const smartwrap = require('smartwrap')
+// ESM
+import smartwrap from 'smartwrap'
+// or: import { smartwrap } from 'smartwrap'
+
+// CommonJS
+const smartwrap = require('smartwrap')
 
 console.log(smartwrap('宽字符', { width: 2 }))
 // 宽
