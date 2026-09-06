@@ -1,21 +1,80 @@
 # smartwrap
 
-[![Build Status](https://travis-ci.org/tecfu/smartwrap.svg?branch=master)](https://travis-ci.org/tecfu/smartwrap) [![Dependency Status](https://david-dm.org/tecfu/smartwrap.png)](https://david-dm.org/tecfu/smartwrap) [![NPM version](https://badge.fury.io/js/smartwrap.svg)](http://badge.fury.io/js/smartwrap)
+Textwrap for JavaScript/Node.js.  
+Correctly handles wide characters (宽字符) and emojis (😃).  
+Optionally break words when wrapping strings. Preserves ANSI escape codes.
 
-Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Optionally break words when wrapping strings.
-## Why? 
+## Why?
 
-I needed a javascript package to correctly wrap wide characters - which have a "length" property value of 1 but occupy 2 or more spaces in the terminal.
+JavaScript's `String.length` counts code units, not visual terminal width.  
+Wide characters (CJK) and many emoji occupy 2 columns but have length 1.  
+This package wraps text to a target **visual** width using `wcwidth`.
 
-## Example Usages:
+## Installation
 
-### Terminal:
-```sh
-npm i -g smartwrap
-echo somestring you want to wrap | smartwrap --width=3 --paddingLeft=1
+```bash
+npm install smartwrap
 ```
 
-#### Output:
+CLI (global):
+
+```bash
+npm install -g smartwrap
+```
+
+## Node module
+
+### Wide character wrapping
+
+```js
+const smartwrap = require('smartwrap')
+console.log(smartwrap('宽字符', { width: 2 }))
+// 宽
+// 字
+// 符
+```
+
+### Word wrapping (default)
+
+```js
+console.log(smartwrap('break at word', {
+  width: 10,
+  breakword: false // default
+}))
+// break at
+// word
+```
+
+### Force-break long words
+
+```js
+console.log(smartwrap('break at word', {
+  width: 10,
+  breakword: true
+}))
+// break at w
+// ord
+```
+
+### Options
+
+| Option         | Type     | Default     | Description |
+|----------------|----------|-------------|-------------|
+| `width`        | number   | `10`        | Target line width in terminal columns |
+| `breakword`    | boolean  | `false`     | Break words that exceed remaining space |
+| `minWidth`     | 1 \| 2   | `2`         | Minimum usable width (use `1` only if no wide chars) |
+| `paddingLeft`  | number   | `0`         | Spaces prepended to each line |
+| `paddingRight` | number   | `0`         | Spaces appended to each line |
+| `splitAt`      | string[] | `[" ","\t"]`| Characters that split words |
+| `trim`         | boolean  | `true`      | Trim leading/trailing whitespace from input |
+| `errorChar`    | string   | `"�"`       | Replacement when a single wide char cannot fit |
+
+## CLI
+
+```bash
+echo "somestring you want to wrap" | smartwrap --width=3 --paddingLeft=1
+```
+
 ```
  so
  me
@@ -31,82 +90,24 @@ echo somestring you want to wrap | smartwrap --width=3 --paddingLeft=1
  ap
 ```
 
-## Node module:
+Run `smartwrap --help` for all flags.
 
-### Wide Character Wrapping
+## Breaking changes in 3.0.0
 
-```js
-var Smartwrap = require('smartwrap');
-var exampleText1 = '宽字符';
-console.log(Smartwrap(exampleText1,{
-  width: 2
-}));
-```
+- **Node.js ≥ 12** required (native `Array.prototype.flat`).
+- Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill (eliminates ~50 transitive dependencies).
+- Updated `yargs` and other dependencies.
+- CLI now correctly passes `breakword` and `errorChar`.
+- Test runner switched from Grunt to plain Mocha.
+- Minor code cleanups (fixed undeclared variable, modernized style).
 
-- Output:
-```
-宽
-字
-符
-```
+Existing wrapping behavior for supported inputs is intentionally preserved.
 
-### String Wrapping
+## Compatibility
 
-```js
-let exampleText2 = "break at word"
-
-console.log(smartwrap(exampleText2,{
-  width: 10,
-  breakword: false //default
-}))
-```
-
-- Output:
-
-```
-break at
-word
-```
-
-### Breaking Words When Wrapping Strings
-
-```js
-console.log(smartwrap(exampleText2,{
-  width: 10,
-  breakword: true
-}))
-```
-
-- Output:
-
-```
-break at w
-ord
-```
-
-## Options
-
-```sh
---breakword       Choose whether or not to break words when wrapping a string
-                                                                 [default: false]
---errorChar       Placeholder for wide characters when minWidth < 2
-                                                                 [default: �]
---minWidth        Never change this unless you are certin you are not using
-                  wide characters and you want a column 1 space wide. Then
-                  change to 1.                   [choices: 1, 2] [default: 2]
---paddingLeft     Set the left padding of the output             [default: 0]
---paddingRight    Set the right padding of the output            [default: 0]
---splitAt         Characters at which to split input    [default: [" ","\t"]]
---trim            Trim the whitespace from end of input       [default: true]
---width, -w       Set the line width of the output (in spaces)
-                                                     [required] [default: 10]
-```
-
-## Compatibility 
-
-node 6.0 <
+- Node.js ≥ 12
+- CommonJS
 
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
-
