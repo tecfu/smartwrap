@@ -4,19 +4,26 @@ Textwrap for JavaScript/Node.js, written in **TypeScript**.
 Correctly handles wide characters (宽字符) and emojis (😃).  
 Optionally break words when wrapping strings. Preserves ANSI escape codes.
 
-Ships compiled CommonJS + declaration files (`.d.ts`).
+Ships compiled CommonJS + ESM + declaration files (`.d.ts`).
 
 ## Installation
+
+**Library only** (no CLI, no `yargs`):
 
 ```bash
 npm install smartwrap
 ```
 
-CLI (global):
+**CLI** (separate package):
 
 ```bash
-npm install -g smartwrap
+npm install -g smartwrap-cli
 ```
+
+| Install | Package | Contents |
+|---------|---------|----------|
+| `npm install smartwrap` | **smartwrap** | Core library only |
+| `npm install -g smartwrap-cli` | **smartwrap-cli** | `smartwrap` binary + yargs |
 
 ## Usage
 
@@ -76,12 +83,14 @@ npm test
 
 Source is pure TypeScript under `src/`. Published artifacts live in `dist/`.
 
+The CLI lives in `packages/smartwrap-cli` and is published separately as `smartwrap-cli`.
+
 ## Breaking changes in 3.0.0
 
 - **Node.js ≥ 14** required.
 - Source rewritten in TypeScript; `main` / `types` point at `dist/`.
-- Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill.
-- See prior changelog notes on the modernize release for dependency cleanup details.
+- CLI moved to the separate **`smartwrap-cli`** package (core no longer depends on `yargs`).
+- Removed unused `grapheme-splitter`, `breakword`, and the `array.prototype.flat` polyfill.
 
 ## License
 
