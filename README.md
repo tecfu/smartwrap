@@ -1,14 +1,10 @@
 # smartwrap
 
-Textwrap for JavaScript/Node.js.  
+Textwrap for JavaScript/Node.js, written in **TypeScript**.  
 Correctly handles wide characters (宽字符) and emojis (😃).  
 Optionally break words when wrapping strings. Preserves ANSI escape codes.
 
-## Why?
-
-JavaScript's `String.length` counts code units, not visual terminal width.  
-Wide characters (CJK) and many emoji occupy 2 columns but have length 1.  
-This package wraps text to a target **visual** width using `wcwidth`.
+Ships compiled CommonJS + declaration files (`.d.ts`).
 
 ## Installation
 
@@ -22,41 +18,35 @@ CLI (global):
 npm install -g smartwrap
 ```
 
-## Node module
+## Usage
 
-### Wide character wrapping
+```ts
+// ESM
+import smartwrap from 'smartwrap'
+// or: import { smartwrap } from 'smartwrap'
 
-```js
+// CommonJS
 const smartwrap = require('smartwrap')
+
 console.log(smartwrap('宽字符', { width: 2 }))
 // 宽
 // 字
 // 符
 ```
 
-### Word wrapping (default)
-
-```js
-console.log(smartwrap('break at word', {
-  width: 10,
-  breakword: false // default
-}))
+```ts
+console.log(smartwrap('break at word', { width: 10 }))
 // break at
 // word
 ```
 
-### Force-break long words
-
-```js
-console.log(smartwrap('break at word', {
-  width: 10,
-  breakword: true
-}))
+```ts
+console.log(smartwrap('break at word', { width: 10, breakword: true }))
 // break at w
 // ord
 ```
 
-### Options
+### Options (`SmartwrapOptions`)
 
 | Option         | Type     | Default     | Description |
 |----------------|----------|-------------|-------------|
@@ -73,40 +63,25 @@ console.log(smartwrap('break at word', {
 
 ```bash
 echo "somestring you want to wrap" | smartwrap --width=3 --paddingLeft=1
+smartwrap --help
 ```
 
-```
- so
- me
- st
- ri
- ng
- yo
- u
- wa
- nt
- to
- wr
- ap
+## Development
+
+```bash
+npm install
+npm run build   # tsc → dist/
+npm test
 ```
 
-Run `smartwrap --help` for all flags.
+Source is pure TypeScript under `src/`. Published artifacts live in `dist/`.
 
 ## Breaking changes in 3.0.0
 
-- **Node.js ≥ 12** required (native `Array.prototype.flat`).
-- Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill (eliminates ~50 transitive dependencies).
-- Updated `yargs` and other dependencies.
-- CLI now correctly passes `breakword` and `errorChar`.
-- Test runner switched from Grunt to plain Mocha.
-- Minor code cleanups (fixed undeclared variable, modernized style).
-
-Existing wrapping behavior for supported inputs is intentionally preserved.
-
-## Compatibility
-
-- Node.js ≥ 12
-- CommonJS
+- **Node.js ≥ 14** required.
+- Source rewritten in TypeScript; `main` / `types` point at `dist/`.
+- Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill.
+- See prior changelog notes on the modernize release for dependency cleanup details.
 
 ## License
 

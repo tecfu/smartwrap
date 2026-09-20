@@ -1,7 +1,48 @@
-'use strict'
+import stripAnsi from 'strip-ansi'
+import wcwidth from 'wcwidth'
 
-const stripAnsi = require('strip-ansi')
-const wcwidth = require('wcwidth')
+/** Options accepted by smartwrap. */
+export interface SmartwrapOptions {
+  /** Break words that exceed the remaining line width. Default: false */
+  breakword?: boolean
+  /** Minimum usable width (1 or 2). Default: 2 */
+  minWidth?: 1 | 2
+  /** Spaces prepended to each line. Default: 0 */
+  paddingLeft?: number
+  /** Spaces appended to each line. Default: 0 */
+  paddingRight?: number
+  /** Replacement when a single wide char cannot fit. Default: "�" */
+  errorChar?: string
+  /** Reserved. Default: "string" */
+  returnFormat?: 'string' | 'array'
+  /** Characters that split words. Default: [" ", "\t"] */
+  splitAt?: string[]
+  /** Trim leading/trailing whitespace from input. Default: true */
+  trim?: boolean
+  /** Target line width in terminal columns. Default: 10 */
+  width?: number
+}
+
+interface Config {
+  breakword: boolean
+  minWidth: number
+  paddingLeft: number
+  paddingRight: number
+  errorChar: string
+  returnFormat: 'string' | 'array'
+  skipPadding: boolean
+  splitAt: string[]
+  trim: boolean
+  width: number
+}
+
+interface AnsiMatch {
+  start: number
+  end: number
+  match?: string
+  length?: number
+  expand?: boolean
+}
 
 const ANSIPattern = [
   '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
@@ -9,43 +50,47 @@ const ANSIPattern = [
 ].join('|')
 const ANSIRegex = new RegExp(ANSIPattern, 'g')
 
-const defaults = () => ({
+const defaults = (): Config => ({
   breakword: false,
-  minWidth: 2, // fallback if width set too narrow
+  minWidth: 2,
   paddingLeft: 0,
   paddingRight: 0,
   errorChar: '�',
-  returnFormat: 'string', // or 'array' (reserved)
-  skipPadding: false, // set true when padding is too wide for line length
+  returnFormat: 'string',
+  skipPadding: false,
   splitAt: [' ', '\t'],
   trim: true,
   width: 10
 })
 
-const calculateSpaceRemaining = (lineLength, spacesUsed, config) =>
+const calculateSpaceRemaining = (
+  lineLength: number,
+  spacesUsed: number,
+  config: Config
+): number =>
   Math.max(lineLength - spacesUsed - config.paddingLeft - config.paddingRight, 0)
 
-const validateInput = (text, options) => {
-  const config = Object.assign({}, defaults(), options || {})
+const validateInput = (
+  text: string,
+  options?: SmartwrapOptions
+): { text: string; config: Config; lineLength: number } => {
+  const config: Config = Object.assign({}, defaults(), options || {})
 
   if (config.errorChar) {
-    // only allow a single errorChar
     config.errorChar = String(config.errorChar).charAt(0)
-
-    // errorChar must not be a wide character
     if (wcwidth(config.errorChar) > 1) {
-      throw new Error(`Error character cannot be a wide character (${config.errorChar})`)
+      throw new Error(
+        `Error character cannot be a wide character (${config.errorChar})`
+      )
     }
   }
 
-  // ensure non-negative padding
   config.paddingLeft = Math.abs(config.paddingLeft)
   config.paddingRight = Math.abs(config.paddingRight)
 
   let lineLength = config.width - config.paddingLeft - config.paddingRight
 
   if (lineLength < config.minWidth) {
-    // skip padding if lineLength too narrow
     config.skipPadding = true
     lineLength = config.minWidth
   }
@@ -57,11 +102,10 @@ const validateInput = (text, options) => {
   return { text, config, lineLength }
 }
 
-const wrap = (input, options) => {
+const wrap = (input: string, options?: SmartwrapOptions): string => {
   const { text, config, lineLength } = validateInput(input, options)
 
-  let words = []
-
+  let words: string[]
   if (!config.breakword) {
     if (config.splitAt.indexOf('\t') !== -1) {
       words = text.split(/ |\t/)
@@ -72,31 +116,28 @@ const wrap = (input, options) => {
     words = [text]
   }
 
-  // remove empty array elements
   words = words.filter(val => val.length > 0)
 
-  const lines = [[]]
+  const lines: string[][] = [[]]
   let currentLine = 0
   let spacesUsed = 0
 
   while (words.length > 0) {
     const spaceRemaining = calculateSpaceRemaining(lineLength, spacesUsed, config)
-    const word = words.shift()
+    const word = words.shift() as string
     const wordLength = wcwidth(word)
 
     switch (true) {
-      // too long for an empty line and is a single character
       case lineLength < wordLength && [...word].length === 1:
         words.unshift(config.errorChar)
         break
 
-      // too long for an empty line, must be broken across lines
       case lineLength < wordLength: {
         // Break the whole word into line-sized chunks in a single pass.
         // Re-queuing just the tail means the remainder is spread and measured
         // again on every iteration, which is quadratic for a long word (a URL,
-        // token or base64 blob), so a ~125KB word takes tens of seconds.
-        const chunks = []
+        // token or base64 blob).
+        const chunks: string[] = []
         let chunk = ''
         let chunkWidth = 0
 
@@ -120,14 +161,12 @@ const wrap = (input, options) => {
         break
       }
 
-      // not enough space remaining in line, wrap to next line
       case spaceRemaining < wordLength:
         lines.push([])
         currentLine++
         spacesUsed = 0
-        // fall through
+      // fall through
 
-      // fits on current line
       default:
         lines[currentLine].push(word)
         spacesUsed += wordLength + 1
@@ -139,21 +178,19 @@ const wrap = (input, options) => {
       let out = line.join(' ')
       if (!config.skipPadding) {
         out =
-          ' '.repeat(config.paddingLeft) +
-          out +
-          ' '.repeat(config.paddingRight)
+          ' '.repeat(config.paddingLeft) + out + ' '.repeat(config.paddingRight)
       }
       return out
     })
     .join('\n')
 }
 
-const splitAnsiInput = (text) => {
-  const matches = []
+const splitAnsiInput = (text: string): string[] => {
+  const matches: AnsiMatch[] = []
   const textArr = [...text]
   const textLength = textArr.length
 
-  let result
+  let result: RegExpExecArray | null
   while ((result = ANSIRegex.exec(text)) !== null) {
     matches.push({
       start: result.index,
@@ -163,25 +200,31 @@ const splitAnsiInput = (text) => {
     })
   }
 
-  if (matches.length < 1) return [] // no ANSI escapes
+  if (matches.length < 1) return []
 
-  // add start and end positions for non-matches
-  let expanded = matches.reduce((prev, curr) => {
-    const prevEnd = prev[prev.length - 1]
-    if (prevEnd.end < curr.start) {
-      prev.push({
-        start: prevEnd.end,
-        end: curr.start,
-        length: curr.start - prevEnd.end,
-        expand: true
-      }, curr)
-    } else {
-      prev.push(curr)
-    }
-    return prev
-  }, [{ start: 0, end: 0 }]).slice(1)
+  let expanded = matches
+    .reduce<AnsiMatch[]>(
+      (prev, curr) => {
+        const prevEnd = prev[prev.length - 1]
+        if (prevEnd.end < curr.start) {
+          prev.push(
+            {
+              start: prevEnd.end,
+              end: curr.start,
+              length: curr.start - prevEnd.end,
+              expand: true
+            },
+            curr
+          )
+        } else {
+          prev.push(curr)
+        }
+        return prev
+      },
+      [{ start: 0, end: 0 }]
+    )
+    .slice(1)
 
-  // add trailing match if necessary
   const lastMatchEnd = expanded[expanded.length - 1].end
   if (lastMatchEnd < textLength) {
     expanded.push({
@@ -199,10 +242,10 @@ const splitAnsiInput = (text) => {
     .flat(2)
 }
 
-const restoreANSI = (savedArr, processedArr) => {
+const restoreANSI = (savedArr: string[], processedArr: string[]): string[] => {
   return processedArr
     .map(char => {
-      let result
+      let result: string[]
       if (char === '\n') {
         result = [char]
       } else {
@@ -210,15 +253,29 @@ const restoreANSI = (savedArr, processedArr) => {
         result = savedArr.splice(0, splicePoint)
       }
 
-      // add following consecutive closing tags in case linebreak inserted next
       const ANSIClosePattern = '^\\x1b\\[([0-9]+)*m'
-      const ANSICloseRegex = new RegExp(ANSIClosePattern) // eslint-disable-line no-control-regex
-      const closeCodes = ['0', '21', '22', '23', '24', '25', '27', '28', '29', '39', '49', '54', '55']
+      // eslint-disable-next-line no-control-regex
+      const ANSICloseRegex = new RegExp(ANSIClosePattern)
+      const closeCodes = [
+        '0',
+        '21',
+        '22',
+        '23',
+        '24',
+        '25',
+        '27',
+        '28',
+        '29',
+        '39',
+        '49',
+        '54',
+        '55'
+      ]
 
-      let match
+      let match: RegExpMatchArray | null
       while (savedArr.length && (match = savedArr[0].match(ANSICloseRegex))) {
         if (!closeCodes.includes(match[1])) break
-        result.push(savedArr.shift())
+        result.push(savedArr.shift() as string)
       }
 
       return result.join('')
@@ -226,29 +283,29 @@ const restoreANSI = (savedArr, processedArr) => {
     .concat(savedArr)
 }
 
-module.exports = (input, options) => {
-  // process each existing line separately to respect existing line breaks
-  const processedLines = String(input).split('\n').map(string => {
-    // save input ANSI escape codes to be restored later
-    const savedANSI = splitAnsiInput(string)
-
-    // strip ANSI
-    string = stripAnsi(string)
-
-    // add newlines to string
-    string = wrap(string, options)
-
-    // convert into array of characters
-    let charArr = [...string]
-
-    // restore input ANSI escape codes
-    if (savedANSI.length > 0) {
-      charArr = restoreANSI(savedANSI, charArr)
-    }
-
-    // convert array of single characters into array of lines
-    return charArr.join('').split('\n')
-  })
+/**
+ * Wrap `input` to the given visual width, preserving ANSI codes and
+ * respecting wide characters / emoji via wcwidth.
+ */
+function smartwrap(
+  input: string | number,
+  options?: SmartwrapOptions
+): string {
+  const processedLines = String(input)
+    .split('\n')
+    .map(string => {
+      const savedANSI = splitAnsiInput(string)
+      string = stripAnsi(string)
+      string = wrap(string, options)
+      let charArr = [...string]
+      if (savedANSI.length > 0) {
+        charArr = restoreANSI(savedANSI, charArr)
+      }
+      return charArr.join('').split('\n')
+    })
 
   return processedLines.flat(2).join('\n')
 }
+
+export default smartwrap
+export { smartwrap }
