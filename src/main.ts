@@ -1,8 +1,8 @@
 import stripAnsi from 'strip-ansi'
 import breakword from 'breakword'
 
-// String display width in terminal cells, summed per code point.
-const width = (input: string): number =>
+// Display width for ANSI-free text, summed per Unicode code point.
+const displayWidth = (input: string): number =>
   [...input].reduce((sum, char) => sum + breakword.width(char), 0)
 
 /** Options accepted by smartwrap. */
@@ -82,7 +82,7 @@ const validateInput = (
 
   if (config.errorChar) {
     config.errorChar = String(config.errorChar).charAt(0)
-    if (width(config.errorChar) > 1) {
+    if (displayWidth(config.errorChar) > 1) {
       throw new Error(
         `Error character cannot be a wide character (${config.errorChar})`
       )
@@ -129,7 +129,7 @@ const wrap = (input: string, options?: SmartwrapOptions): string => {
   while (words.length > 0) {
     const spaceRemaining = calculateSpaceRemaining(lineLength, spacesUsed, config)
     const word = words.shift() as string
-    const wordLength = width(word)
+    const wordLength = displayWidth(word)
 
     switch (true) {
       case lineLength < wordLength && [...word].length === 1:
