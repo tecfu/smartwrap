@@ -78,7 +78,7 @@ Source is pure TypeScript under `src/`. Published artifacts live in `dist/`.
 
 ## Breaking changes in 3.0.0
 
-- **Node.js ≥ 14** required.
+- **Node.js ≥ 22** required (matches breakword@2.1.0).
 - Source rewritten in TypeScript; `main` / `types` point at `dist/`.
 - Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill.
 - See prior changelog notes on the modernize release for dependency cleanup details.

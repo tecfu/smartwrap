@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=22"
   },
   "bin": {
     "smartwrap": "./dist/cjs/terminal-adapter.js"
