@@ -101,6 +101,26 @@ module.exports = [
     "output": "breakthislonginput"
   },
   {
+    "input": "éclair",
+    "width": 1,
+    "output": "éclair"
+  },
+  {
+    "input": "👨‍👩‍👧",
+    "width": 6,
+    "output": "👨‍👩‍👧"
+  },
+  {
+    "input": "🇺🇸",
+    "width": 2,
+    "output": "🇺🇸"
+  },
+  {
+    "input": "❤️",
+    "width": 1,
+    "output": "❤️"
+  },
+  {
     "input": "LordPablo⚡️",
     // U+26A1+U+FE0F is 2 cells under breakword's width policy (wcwidth 1.x said 1)
     "width": 10,
