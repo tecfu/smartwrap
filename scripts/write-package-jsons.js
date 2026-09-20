@@ -30,14 +30,5 @@ if (fs.existsSync(cjsMain)) {
   }
 }
 
-const bin = path.join('dist', 'cjs', 'terminal-adapter.js')
-if (fs.existsSync(bin)) {
-  let content = fs.readFileSync(bin, 'utf8')
-  if (!content.startsWith('#!')) {
-    content = '#!/usr/bin/env node\n' + content
-    fs.writeFileSync(bin, content)
-  }
-  fs.chmodSync(bin, 0o755)
-}
 
 console.log('Wrote dist package metadata and CJS interop')

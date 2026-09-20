@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-import smartwrap, { type SmartwrapOptions } from './main'
-import yargs from 'yargs'
+'use strict'
+
+const smartwrap = require('smartwrap')
+const yargs = require('yargs')
 
 const argv = yargs
   .option('breakword', {
@@ -13,8 +15,8 @@ const argv = yargs
     describe: 'Placeholder for wide characters when minWidth < 2'
   })
   .option('minWidth', {
-    choices: [1, 2] as const,
-    default: 2 as 1 | 2,
+    choices: [1, 2],
+    default: 2,
     describe:
       'Minimum line width. Use 1 only if you are certain you are not using wide characters and want a 1-space column.'
   })
@@ -29,7 +31,7 @@ const argv = yargs
     type: 'number'
   })
   .option('splitAt', {
-    default: [' ', '\t'] as string[],
+    default: [' ', '\t'],
     describe: 'Characters at which to split input'
   })
   .option('trim', {
@@ -42,7 +44,7 @@ const argv = yargs
     default: 10,
     describe: 'Set the line width of the output (in spaces)',
     demandOption: true,
-    coerce: (arg: string | number): number => {
+    coerce: (arg) => {
       const n = Number(arg)
       if (Number.isNaN(n)) {
         throw new Error('Invalid width specified.')
@@ -54,7 +56,7 @@ const argv = yargs
   .alias('h', 'help')
   .parseSync()
 
-const options: SmartwrapOptions = {}
+const options = {}
 const keys = [
   'breakword',
   'errorChar',
@@ -64,18 +66,17 @@ const keys = [
   'splitAt',
   'trim',
   'width'
-] as const
+]
 
 for (const key of keys) {
   if (typeof argv[key] !== 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(options as any)[key] = argv[key]
+    options[key] = argv[key]
   }
 }
 
 process.stdin.resume()
 process.stdin.setEncoding('utf8')
-process.stdin.on('data', (chunk: string) => {
+process.stdin.on('data', (chunk) => {
   const out = smartwrap(chunk, options)
   console.log(out)
 })

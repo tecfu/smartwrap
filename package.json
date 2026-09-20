@@ -1,7 +1,7 @@
 {
   "name": "smartwrap",
   "version": "3.0.0",
-  "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (宽字符) and emojis (😃). Wraps strings with option to break on words.",
+  "description": "Textwrap for javascript/nodejs. Correctly handles wide characters (\u5bbd\u5b57\u7b26) and emojis (\ud83d\ude03). Wraps strings with option to break on words.",
   "main": "./dist/cjs/main.js",
   "module": "./dist/esm/main.js",
   "types": "./dist/cjs/main.d.ts",
@@ -21,9 +21,6 @@
   },
   "engines": {
     "node": ">=14"
-  },
-  "bin": {
-    "smartwrap": "./dist/cjs/terminal-adapter.js"
   },
   "scripts": {
     "build": "npm run build:cjs && npm run build:esm && node scripts/write-package-jsons.js",
@@ -53,13 +50,11 @@
   "license": "MIT",
   "dependencies": {
     "strip-ansi": "^6.0.1",
-    "wcwidth": "^1.0.1",
-    "yargs": "^17.7.2"
+    "wcwidth": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",
     "@types/strip-ansi": "^5.2.1",
-    "@types/yargs": "^17.0.33",
     "chai": "^4.3.10",
     "eslint": "^8.57.0",
     "mocha": "^10.7.3",

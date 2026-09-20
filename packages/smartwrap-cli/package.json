@@ -1,0 +1,33 @@
+{
+  "name": "smartwrap-cli",
+  "version": "3.0.0",
+  "description": "CLI for smartwrap — text wrapping with wide-character and emoji support",
+  "bin": {
+    "smartwrap": "src/terminal-adapter.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tecfu/smartwrap.git",
+    "directory": "packages/smartwrap-cli"
+  },
+  "keywords": [
+    "smartwrap",
+    "wordwrap",
+    "cli",
+    "terminal"
+  ],
+  "author": "tecfu",
+  "license": "MIT",
+  "dependencies": {
+    "smartwrap": "^3.0.0",
+    "yargs": "^17.7.2"
+  },
+  "files": [
+    "src/",
+    "LICENSE",
+    "README.md"
+  ]
+}
