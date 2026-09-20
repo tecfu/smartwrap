@@ -52,7 +52,6 @@
   "author": "tecfu",
   "license": "MIT",
   "dependencies": {
-    "breakword": "^1.0.5",
     "strip-ansi": "^6.0.1",
     "wcwidth": "^1.0.1",
     "yargs": "^17.7.2"

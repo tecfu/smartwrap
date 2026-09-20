@@ -1,4 +1,3 @@
-import breakword from 'breakword'
 import stripAnsi from 'strip-ansi'
 import wcwidth from 'wcwidth'
 
@@ -134,10 +133,31 @@ const wrap = (input: string, options?: SmartwrapOptions): string => {
         break
 
       case lineLength < wordLength: {
-        const splitIndex = breakword(word, lineLength)
-        const splitWord = [...word]
-        words.unshift(splitWord.slice(0, splitIndex + 1).join(''))
-        words.splice(1, 0, splitWord.slice(splitIndex + 1).join(''))
+        // Break the whole word into line-sized chunks in a single pass.
+        // Re-queuing just the tail means the remainder is spread and measured
+        // again on every iteration, which is quadratic for a long word (a URL,
+        // token or base64 blob).
+        const chunks: string[] = []
+        let chunk = ''
+        let chunkWidth = 0
+
+        for (const character of word) {
+          const characterWidth = wcwidth(character)
+          if (chunk !== '' && chunkWidth + characterWidth > lineLength) {
+            chunks.push(chunk)
+            chunk = ''
+            chunkWidth = 0
+          }
+          chunk += character
+          chunkWidth += characterWidth
+        }
+        if (chunk !== '') {
+          chunks.push(chunk)
+        }
+
+        // concat rather than unshift(...chunks): a long word can produce more
+        // chunks than the argument limit allows to be spread.
+        words = chunks.concat(words)
         break
       }
 
