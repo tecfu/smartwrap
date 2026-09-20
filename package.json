@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=22"
   },
   "bin": {
     "smartwrap": "./dist/cjs/terminal-adapter.js"
@@ -52,8 +52,8 @@
   "author": "tecfu",
   "license": "MIT",
   "dependencies": {
+    "breakword": "^2.1.0",
     "strip-ansi": "^6.0.1",
-    "wcwidth": "^1.0.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {

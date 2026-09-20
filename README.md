@@ -78,7 +78,8 @@ Source is pure TypeScript under `src/`. Published artifacts live in `dist/`.
 
 ## Breaking changes in 3.0.0
 
-- **Node.js ≥ 14** required.
+- **Node.js ≥ 22** required (matches breakword@2.1.0).
+- Display width is now measured by [`breakword.width()`](https://github.com/tecfu/breakword) instead of `wcwidth`: a generated Unicode 18.0.0 East Asian Width table plus UAX #51 `Emoji_Presentation`, no dependencies of its own. Output changes where the two disagree — code points `wcwidth` 1.x scored 1 cell but measure 2 (e.g. `⚡` U+26A1) now wrap wider.
 - Source rewritten in TypeScript; `main` / `types` point at `dist/`.
 - Removed unused `grapheme-splitter` and the `array.prototype.flat` polyfill.
 - See prior changelog notes on the modernize release for dependency cleanup details.

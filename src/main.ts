@@ -1,5 +1,9 @@
 import stripAnsi from 'strip-ansi'
-import wcwidth from 'wcwidth'
+import breakword from 'breakword'
+
+// Display width for ANSI-free text, summed per Unicode code point.
+const displayWidth = (input: string): number =>
+  [...input].reduce((sum, char) => sum + breakword.width(char), 0)
 
 /** Options accepted by smartwrap. */
 export interface SmartwrapOptions {
@@ -78,7 +82,7 @@ const validateInput = (
 
   if (config.errorChar) {
     config.errorChar = String(config.errorChar).charAt(0)
-    if (wcwidth(config.errorChar) > 1) {
+    if (displayWidth(config.errorChar) > 1) {
       throw new Error(
         `Error character cannot be a wide character (${config.errorChar})`
       )
@@ -125,7 +129,7 @@ const wrap = (input: string, options?: SmartwrapOptions): string => {
   while (words.length > 0) {
     const spaceRemaining = calculateSpaceRemaining(lineLength, spacesUsed, config)
     const word = words.shift() as string
-    const wordLength = wcwidth(word)
+    const wordLength = displayWidth(word)
 
     switch (true) {
       case lineLength < wordLength && [...word].length === 1:
@@ -142,7 +146,7 @@ const wrap = (input: string, options?: SmartwrapOptions): string => {
         let chunkWidth = 0
 
         for (const character of word) {
-          const characterWidth = wcwidth(character)
+          const characterWidth = breakword.width(character)
           if (chunk !== '' && chunkWidth + characterWidth > lineLength) {
             chunks.push(chunk)
             chunk = ''
@@ -285,7 +289,7 @@ const restoreANSI = (savedArr: string[], processedArr: string[]): string[] => {
 
 /**
  * Wrap `input` to the given visual width, preserving ANSI codes and
- * respecting wide characters / emoji via wcwidth.
+ * respecting wide characters / emoji via breakword.width.
  */
 function smartwrap(
   input: string | number,
