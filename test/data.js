@@ -102,7 +102,7 @@ module.exports = [
   },
   {
     "input": "éclair",
-    "width": 1,
+    "width": 6,
     "output": "éclair"
   },
   {
