@@ -102,8 +102,9 @@ module.exports = [
   },
   {
     "input": "LordPablo⚡️",
+    // U+26A1+U+FE0F is 2 cells under breakword's width policy (wcwidth 1.x said 1)
     "width": 10,
-    "output": "LordPablo⚡️"
+    "output": "LordPablo\n⚡️"
   },
   {
     "input": "☺️ ☺️",
