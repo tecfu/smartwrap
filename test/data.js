@@ -158,5 +158,26 @@ module.exports = [
     "minWidth": 1,
     "output": "break at w\nord",
     "breakword": true
+  },
+  // ANSI codes + astral characters (UTF-16 surrogate pairs): nothing may be cut from the end
+  {
+    "input": "\x1b[32mok\x1b[39m 👍 all tests passed",
+    "width": 40,
+    "output": "\x1b[32mok\x1b[39m 👍 all tests passed"
+  },
+  {
+    "input": "🚀 \x1b[1mDeploy\x1b[22m finished",
+    "width": 40,
+    "output": "🚀 \x1b[1mDeploy\x1b[22m finished"
+  },
+  {
+    "input": "a\x1b[31mb😀",
+    "width": 10,
+    "output": "a\x1b[31mb😀"
+  },
+  {
+    "input": "𝒳\x1b[1mabc",
+    "width": 20,
+    "output": "𝒳\x1b[1mabc"
   }
 ]
