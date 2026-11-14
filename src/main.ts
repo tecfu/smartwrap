@@ -191,8 +191,8 @@ const wrap = (input: string, options?: SmartwrapOptions): string => {
 
 const splitAnsiInput = (text: string): string[] => {
   const matches: AnsiMatch[] = []
-  const textArr = [...text]
-  const textLength = textArr.length
+  // UTF-16 length: match indices and substring() below use code units, not code points
+  const textLength = text.length
 
   let result: RegExpExecArray | null
   while ((result = ANSIRegex.exec(text)) !== null) {
